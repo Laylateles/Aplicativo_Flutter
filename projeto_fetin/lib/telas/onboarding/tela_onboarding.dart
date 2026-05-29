@@ -19,13 +19,13 @@ class _TelaOnboardingState extends State<TelaOnboarding> {
   OnboardingModelo(
     titulo: "Bem-vindo ao KeepClose",
     descricao: "Acompanhe em tempo real o que é importante para você.",
-    imagem: "",
+    imagem: "assets/imagens/imagem-onboarding1.svg",
   ),
 
   OnboardingModelo(
     titulo: "Segurança em tranquilidade",
     descricao: "Receba alertas e fique sempre informado",
-    imagem: "",
+    imagem: "assets/imagens/imagem-onboarding2.svg",
   ),
 
   OnboardingModelo(
@@ -55,12 +55,10 @@ class _TelaOnboardingState extends State<TelaOnboarding> {
               mainAxisAlignment: MainAxisAlignment.center,
 
             children: [
-
               SvgPicture.asset(
-                "assets/imagens/imagem-onboarding1.svg",
+                pagina.imagem,
                 height: 260,
               ),
-
               const SizedBox(height: 40),
 
               Text(
