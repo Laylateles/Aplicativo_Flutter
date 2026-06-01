@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../modelos/onboarding_modelo.dart';
-import  '../boas_vindas/tela_boas_vindas.dart';
-
+import '../inicio/tela_login.dart';
+import 'package:projeto_fetin/nucleo/tema/app_cores.dart';
 class TelaOnboarding extends StatefulWidget {
   const TelaOnboarding({super.key});
 
@@ -136,7 +136,7 @@ class _TelaOnboardingState extends State<TelaOnboarding> {
 
                   decoration: BoxDecoration(
                     color: paginaAtual == index
-                        ? Colors.deepPurple
+                        ? AppCores.keepClose
                         : Colors.grey.shade300,
 
                     borderRadius: BorderRadius.circular(10),
@@ -153,7 +153,7 @@ class _TelaOnboardingState extends State<TelaOnboarding> {
               height: 55,
               child: ElevatedButton(
                  style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF7B61FF),// cor do botão
+                  backgroundColor: AppCores.keepClose,// cor do botão
                   foregroundColor: Colors.white,//cor do texto
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18),
@@ -172,7 +172,7 @@ class _TelaOnboardingState extends State<TelaOnboarding> {
                     Navigator.pushReplacement(//troca a tela atual pela tela nova
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const TelaBoasVindas(),//diz qual tela deve ser aberta
+                        builder: (context) => const TelaLogin(),
                       ),
                     );
                   }

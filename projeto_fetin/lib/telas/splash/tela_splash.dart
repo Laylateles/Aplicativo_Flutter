@@ -1,8 +1,31 @@
 import 'package:flutter/material.dart';
+import '../onboarding/tela_onboarding.dart';
 
-class TelaSplash extends StatelessWidget {
+class TelaSplash extends StatefulWidget {
   const TelaSplash({super.key});
 
+  @override
+  State<TelaSplash> createState() => _TelaSplashState();
+}
+class _TelaSplashState extends State<TelaSplash> {
+    @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(
+      const Duration(seconds: 2),
+      () {
+        if (!mounted) return;
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const TelaOnboarding(),
+          ),
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

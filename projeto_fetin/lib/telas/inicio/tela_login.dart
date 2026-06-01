@@ -9,15 +9,26 @@ class TelaLogin extends StatefulWidget {
 
 class _TelaLoginState extends State<TelaLogin> {
   bool senhaOculta = true;
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController senhaController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();// permite controlar o texto digitado no campo de e-mail
+  final TextEditingController senhaController = TextEditingController();// permite controlar o texto digitado no campo de senha
   bool formularioValido = false;
+  String? erroEmail;
+  String? erroSenha;
 
   void validarFormulario() {
     //para validar as entradas do usuario
     setState(() {
-      formularioValido =
-          emailController.text.isNotEmpty && senhaController.text.isNotEmpty;
+      if (emailController.text.isNotEmpty && !emailController.text.contains('@')) {
+        erroEmail = "Digite um e-mail válido";
+      } else {
+        erroEmail = null;
+      }
+      if (senhaController.text.isNotEmpty && senhaController.text.length < 6) {
+        erroSenha = "A senha deve ter pelo menos 6 caracteres";
+      } else {
+        erroSenha = null;
+      }
+      formularioValido = emailController.text.isNotEmpty && senhaController.text.isNotEmpty && erroEmail == null && erroSenha == null;
     });
   }
   Widget build(BuildContext context) {
@@ -34,7 +45,7 @@ class _TelaLoginState extends State<TelaLogin> {
             children: [
               //tudo deve estar aqui dentro
               //--------------------------------------------------------------------------
-              Align(
+             /* Align( -- comentei o icone que tinha a esquerda
                 //botão da esquerda
                 alignment: Alignment.centerLeft,
                 child: IconButton(
@@ -48,7 +59,7 @@ class _TelaLoginState extends State<TelaLogin> {
                 ),
               ),
             
-              const SizedBox(height: 20),
+              const SizedBox(height: 20),*/
 //--------------------------------------------------------------------------------
               Center(
                 // logo do aplicativo
@@ -108,8 +119,8 @@ class _TelaLoginState extends State<TelaLogin> {
                   validarFormulario();
                 },
                 decoration: InputDecoration(
-                  hintText:
-                      "E-mail", // é o texto que aparece antes do usuario digitar
+                  hintText: "E-mail", // é o texto que aparece antes do usuario digitar
+                  errorText: erroEmail,
                   hintStyle: TextStyle(color: AppCores.textLight),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
@@ -137,6 +148,7 @@ class _TelaLoginState extends State<TelaLogin> {
                 },  
                 decoration: InputDecoration(
                   hintText: "Senha",
+                  errorText: erroSenha,
                   hintStyle: TextStyle(color: AppCores.textLight),
                   suffixIcon: IconButton(
                     onPressed: () {
