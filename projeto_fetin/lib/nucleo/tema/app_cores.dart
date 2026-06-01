@@ -10,4 +10,6 @@ class AppCores {
   static const Color textDark = Color(0xFF1E1E1E);
 
   static const Color textLight = Color(0xFF777777);
+
+  static const Color keepClose = Colors.deepPurple;
 }
