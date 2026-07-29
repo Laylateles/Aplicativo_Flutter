@@ -3,20 +3,20 @@ import 'app_cores.dart';
 
 class AppTema {
   static ThemeData lightTheme = ThemeData(//tema global do aplicativo
-    scaffoldBackgroundColor: Colors.white,
+    scaffoldBackgroundColor: AppCores.brancoRoxinho,
 
-    primaryColor: AppCores.primary,
+    primaryColor: AppCores.roxoMeioTermo,
 
     fontFamily: 'Poppins',
 
     colorScheme: ColorScheme.fromSeed(
-      seedColor: AppCores.primary,
+      seedColor: AppCores.roxoMeioTermo,
     ),
 
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppCores.primary,
-        foregroundColor: Colors.white,
+        backgroundColor: AppCores.roxoMeioTermo,
+        foregroundColor: AppCores.brancoRoxinho,
         minimumSize: const Size(double.infinity, 55),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(14),

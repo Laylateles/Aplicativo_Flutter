@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:projeto_fetin/nucleo/tema/app_cores.dart';
+import 'package:projeto_fetin/tema/app_cores.dart';
 
 class TelaLogin extends StatefulWidget {
   const TelaLogin({super.key});
@@ -68,7 +68,7 @@ class _TelaLoginState extends State<TelaLogin> {
                   children: [
                     Icon(
                       Icons.location_on,
-                      color: AppCores.keepClose,
+                      color: AppCores.roxoMeioTermo,
                       size: 40,
                     ),
                     SizedBox(width: 8),
@@ -77,7 +77,7 @@ class _TelaLoginState extends State<TelaLogin> {
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
-                        color: AppCores.keepClose,
+                        color: AppCores.roxoMeioTermo,
                       ),
                     ),
                   ],
@@ -121,7 +121,7 @@ class _TelaLoginState extends State<TelaLogin> {
                 decoration: InputDecoration(
                   hintText: "E-mail", // é o texto que aparece antes do usuario digitar
                   errorText: erroEmail,
-                  hintStyle: TextStyle(color: AppCores.textLight),
+                  hintStyle: TextStyle(color: AppCores.cinza),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
                     borderSide: BorderSide(
@@ -131,7 +131,7 @@ class _TelaLoginState extends State<TelaLogin> {
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
                     borderSide: const BorderSide(
-                      color: AppCores.primary,
+                      color: AppCores.roxoClaro,
                       width: 2,
                     ),
                   ),
@@ -149,7 +149,7 @@ class _TelaLoginState extends State<TelaLogin> {
                 decoration: InputDecoration(
                   hintText: "Senha",
                   errorText: erroSenha,
-                  hintStyle: TextStyle(color: AppCores.textLight),
+                  hintStyle: TextStyle(color: AppCores.cinza),
                   suffixIcon: IconButton(
                     onPressed: () {
                       setState(() {
@@ -171,7 +171,7 @@ class _TelaLoginState extends State<TelaLogin> {
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
                     borderSide: const BorderSide(
-                      color: AppCores.primary,
+                      color: AppCores.roxoClaro,
                       width: 2,
                     ),
                   ),
@@ -188,7 +188,7 @@ class _TelaLoginState extends State<TelaLogin> {
                   child: const Text(
                     "Esqueceu a senha?",
                     style: TextStyle(
-                      color: AppCores.keepClose,
+                      color: AppCores.roxoMeioTermo,
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
                     ),
@@ -204,9 +204,9 @@ class _TelaLoginState extends State<TelaLogin> {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: formularioValido
-                      ? AppCores.primary
-                      : AppCores.textLight,
-                    foregroundColor: Colors.white,
+                      ? AppCores.roxoClaro
+                      : AppCores.cinza,
+                    foregroundColor: AppCores.brancoRoxinho,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18),
                     ),
@@ -263,7 +263,7 @@ class _TelaLoginState extends State<TelaLogin> {
                       const Text(
                         "Google",
                         style: TextStyle(
-                          color: Colors.black),
+                          color: AppCores.berandoPreto),
                       ),
                     ],
                   ),
@@ -289,7 +289,7 @@ class _TelaLoginState extends State<TelaLogin> {
                         "Cadastre-se",
                         style: TextStyle(
                           fontSize: 13,
-                          color: AppCores.keepClose,
+                          color: AppCores.roxoMeioTermo,
                           fontWeight: FontWeight.w500,
                         ),
                       ),

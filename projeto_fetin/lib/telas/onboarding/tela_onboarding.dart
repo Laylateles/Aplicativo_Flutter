@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../../modelos/onboarding_modelo.dart';
+import '../tela_base/telaModelo.dart';
 import '../inicio/tela_login.dart';
-import 'package:projeto_fetin/nucleo/tema/app_cores.dart';
+import 'package:projeto_fetin/tema/app_cores.dart';
 class TelaOnboarding extends StatefulWidget {
   const TelaOnboarding({super.key});
 
@@ -15,21 +15,21 @@ class _TelaOnboardingState extends State<TelaOnboarding> {
   final PageController controladorPagina = PageController();
 
   int paginaAtual = 0;
-  final List<OnboardingModelo> paginas = [
+  final List<telaModelo> paginas = [
 
-  OnboardingModelo(
+  telaModelo(
     titulo: "Bem-vindo ao KeepClose",
     descricao: "Acompanhe em tempo real o que é importante para você.",
     imagem: "assets/imagens/imagem-onboarding1.svg",// imagem ok
   ),
 
-  OnboardingModelo(
+  telaModelo(
     titulo: "Segurança em tranquilidade",
     descricao: "Receba alertas e fique sempre informado",
     imagem: "assets/imagens/imagem-onboarding2.svg",//imagem provisoria
   ),
 
-  OnboardingModelo(
+  telaModelo(
     titulo: "Conecte quem você ama",
     descricao: "Convide familiares e amigos e matenha todos conectados.",
     imagem: "assets/imagens/imagem-onboarding3.svg",//imagem provisoria
@@ -136,7 +136,7 @@ class _TelaOnboardingState extends State<TelaOnboarding> {
 
                   decoration: BoxDecoration(
                     color: paginaAtual == index
-                        ? AppCores.keepClose
+                        ? AppCores.roxoMeioTermo
                         : Colors.grey.shade300,
 
                     borderRadius: BorderRadius.circular(10),
@@ -153,8 +153,8 @@ class _TelaOnboardingState extends State<TelaOnboarding> {
               height: 55,
               child: ElevatedButton(
                  style: ElevatedButton.styleFrom(
-                  backgroundColor: AppCores.keepClose,// cor do botão
-                  foregroundColor: Colors.white,//cor do texto
+                  backgroundColor: AppCores.roxoMeioTermo,// cor do botão
+                  foregroundColor: AppCores.brancoRoxinho,//cor do texto
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18),
                   ),

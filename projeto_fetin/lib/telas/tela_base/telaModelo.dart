@@ -1,10 +1,10 @@
-class OnboardingModelo {
+class telaModelo {
 
   final String titulo;
   final String descricao;
   final String imagem;
 
-  OnboardingModelo({
+  telaModelo({
     required this.titulo,
     required this.descricao,
     required this.imagem,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'nucleo/tema/app_tema.dart';
+import 'tema/app_tema.dart';
 import 'telas/splash/tela_splash.dart';
 import 'package:flutter/gestures.dart';// para poder usar o mouse para arrastar a tela
 
