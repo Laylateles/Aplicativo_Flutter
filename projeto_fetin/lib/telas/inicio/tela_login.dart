@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_fetin/tema/app_cores.dart';
+import 'tela_cadastro.dart';
 
 class TelaLogin extends StatefulWidget {
   const TelaLogin({super.key});
@@ -284,7 +285,14 @@ class _TelaLoginState extends State<TelaLogin> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const TelaCadastro(),
+                          ),
+                        );
+                      },
                       child: const Text(
                         "Cadastre-se",
                         style: TextStyle(

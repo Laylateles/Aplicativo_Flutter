@@ -11,5 +11,7 @@ class AppCores {
 
   static const Color cinza = Color(0xFF777777);
 
+  static const Color branco = Colors.white;
+
   static const Color roxoMaisEscuro = Color(0xFF48079C);
 }
