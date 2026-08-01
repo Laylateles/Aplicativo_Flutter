@@ -182,7 +182,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
                 ),
               ),
               const SizedBox(height: 16),
- /*             SizedBox(
+              SizedBox(
                 width: double.infinity,
                 child: TextField(
                   obscureText: esconderConfirmarSenha,
@@ -226,7 +226,33 @@ class _TelaCadastroState extends State<TelaCadastro> {
                 ),
               ),
               const SizedBox(height: 30),
-*/
+              SizedBox(
+                width: double.infinity,
+                height: 55,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppCores.roxoMeioTermo,
+                    foregroundColor: AppCores.branco,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    elevation: 0,
+                  ),
+
+                  onPressed: () {
+
+                  },
+
+                  child: const Text(
+                    "Cadastrar",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
             ],
           ),
         ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_fetin/tema/app_cores.dart';
 import 'tela_cadastro.dart';
+import 'tela_esqueceuSenha.dart';
 
 class TelaLogin extends StatefulWidget {
   const TelaLogin({super.key});
@@ -183,9 +184,23 @@ class _TelaLoginState extends State<TelaLogin> {
               Align(
                 //frase esqueceu a senha
                 alignment: Alignment.centerLeft,
-                child: GestureDetector(
+                child: TextButton(
                   // transforma qualquer widget em algo clicavel
-                  onTap: () {},
+                  onPressed: () {
+                    Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const TelaEsqueceuSenha(),
+                          ),
+                        );
+                  },
+
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+
                   child: const Text(
                     "Esqueceu a senha?",
                     style: TextStyle(
@@ -284,8 +299,8 @@ class _TelaLoginState extends State<TelaLogin> {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () {
+                    TextButton(
+                      onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -293,6 +308,13 @@ class _TelaLoginState extends State<TelaLogin> {
                           ),
                         );
                       },
+
+                      style: TextButton.styleFrom(// isso é usado para remover o padding do botão e deixar o texto mais próximo do outro texto
+                        padding: EdgeInsets.zero,
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+
                       child: const Text(
                         "Cadastre-se",
                         style: TextStyle(
