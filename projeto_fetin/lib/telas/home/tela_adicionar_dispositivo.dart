@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'tela_nomear_dispositivo.dart';
+import '../modelo/dispositivo_modelo.dart';
 import 'package:projeto_fetin/tema/app_cores.dart';
 
 class TelaAdicionarDispositivo extends StatelessWidget {
@@ -103,13 +104,21 @@ class TelaAdicionarDispositivo extends StatelessWidget {
                       title: const Text("KeepClose_TAG_01"),
                       subtitle: const Text("Sinal forte"),
                       trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                      onTap: () {
-                        Navigator.push(
-                          context,
+                      onTap: () async {
+                        final dispositivo =
+                            await Navigator.push<DispositivoModelo>(// ele espera o usuario digitar o nome de tag
+                            context,
                           MaterialPageRoute(
-                            builder: (context) => const TelaNomearDispositivo(),
+                            builder: (context) =>
+                                const TelaNomearDispositivo(
+                              nomeBluetooth: "KeepClose_TAG_01",
+                            ),
                           ),
-                        );
+                        ); // estou fazendo tudo isso para poder adicionar na tela principal os dados da tag de forma dinamica
+
+                        if (dispositivo != null && context.mounted) {
+                          Navigator.pop(context, dispositivo);
+                        }
                       },
                     ),
 
@@ -122,14 +131,21 @@ class TelaAdicionarDispositivo extends StatelessWidget {
                       title: const Text("KeepClose_TAG_02"),
                       subtitle: const Text("Sinal médio"),
                       trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                      onTap: () {
-                        // Depois abriremos a tela para nomear a tag. -- aqui vai aparecer as tags reais
-                        Navigator.push(
-                          context,
+                      onTap: () async {
+                          final dispositivo =
+                            await Navigator.push<DispositivoModelo>(// ele espera o usuario digitar o nome de tag
+                            context,
                           MaterialPageRoute(
-                            builder: (context) => const TelaNomearDispositivo(),
+                            builder: (context) =>
+                                const TelaNomearDispositivo(
+                              nomeBluetooth: "KeepClose_TAG_02",
+                            ),
                           ),
-                        );
+                        ); // estou fazendo tudo isso para poder adicionar na tela principal os dados da tag de forma dinamica
+
+                        if (dispositivo != null && context.mounted) {
+                          Navigator.pop(context, dispositivo);
+                        }
                       },
                     ),
                   ],

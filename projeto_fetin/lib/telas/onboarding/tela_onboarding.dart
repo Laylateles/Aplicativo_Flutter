@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../tela_base/telaModelo.dart';
+import '../modelo/telaModelo.dart';
 import '../inicio/tela_login.dart';
 import 'package:projeto_fetin/tema/app_cores.dart';
 class TelaOnboarding extends StatefulWidget {

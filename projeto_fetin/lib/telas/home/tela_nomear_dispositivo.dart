@@ -1,8 +1,21 @@
 import 'package:flutter/material.dart';
+import '../modelo/dispositivo_modelo.dart';
 import 'package:projeto_fetin/tema/app_cores.dart';
 
-class TelaNomearDispositivo extends StatelessWidget {
-  const TelaNomearDispositivo({super.key});
+class TelaNomearDispositivo extends StatefulWidget {
+  final String nomeBluetooth;
+
+  const TelaNomearDispositivo({
+    super.key,
+    required this.nomeBluetooth,
+  });
+
+  @override
+  State<TelaNomearDispositivo> createState() => _TelaNomearDispositivoState();
+}
+
+class _TelaNomearDispositivoState extends State<TelaNomearDispositivo> {
+  final TextEditingController nomeController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +60,28 @@ class TelaNomearDispositivo extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+              const SizedBox(height: 15),
 
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 10,
+                ),
+
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade200,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+
+                child: Text(
+                  widget.nomeBluetooth,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppCores.roxoMeioTermo,
+                  ),
+                ),
+              ),
               const SizedBox(height: 10),
 
               const Text(
@@ -63,6 +97,8 @@ class TelaNomearDispositivo extends StatelessWidget {
               const SizedBox(height: 30),
 
               TextField(
+                controller: nomeController,
+
                 decoration: InputDecoration(
                   hintText: "Ex.: Mochila da faculdade",
 
@@ -90,8 +126,28 @@ class TelaNomearDispositivo extends StatelessWidget {
                 height: 55,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Depois salvaremos a tag e voltaremos para a Home.
-                  },
+                  final nomeDigitado = nomeController.text.trim();// le o texto e remove os espaçoes desnecessarios
+
+                  if (nomeDigitado.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          "Digite um nome para o dispositivo.",
+                        ),
+                      ),
+                    );
+
+                    return;
+                  }
+
+                  Navigator.pop(
+                    context,
+                    DispositivoModelo(
+                      idBluetooth: widget.nomeBluetooth,
+                      nome: nomeDigitado,
+                    ),
+                  );
+                },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppCores.roxoMeioTermo,
                     foregroundColor: AppCores.branco,
