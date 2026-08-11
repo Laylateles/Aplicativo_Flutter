@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:projeto_fetin/tema/app_cores.dart';
 import 'tela_cadastro.dart';
 import 'tela_esqueceuSenha.dart';
-
+import '../home/tela_home.dart';
 class TelaLogin extends StatefulWidget {
   const TelaLogin({super.key});
   @override
@@ -228,11 +228,15 @@ class _TelaLoginState extends State<TelaLogin> {
                     ),
                     elevation: 0,
                   ),
-                  onPressed: formularioValido
-                    ? () {
-                        print("Login realizado");
-                      }
-                    : null,
+                  onPressed: formularioValido ? () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const TelaHome(),
+                      ),
+                    );
+                  }
+                : null,
                   child: const Text(
                     "Entrar",
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),

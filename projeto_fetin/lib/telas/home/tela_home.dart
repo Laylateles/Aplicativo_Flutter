@@ -196,8 +196,9 @@ class _TelaHomeState extends State<TelaHome> {
           final dispositivo = await Navigator.push<DispositivoModelo>(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  const TelaAdicionarDispositivo(),
+              builder: (context) => TelaAdicionarDispositivo(
+              idsCadastrados: dispositivos.map((dispositivo) => dispositivo.idBluetooth).toList(),
+              ),
             ),
           );
 

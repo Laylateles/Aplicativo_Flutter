@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'tema/app_tema.dart';
-//import 'telas/splash/tela_splash.dart';
+import 'telas/splash/tela_splash.dart';
 import 'package:flutter/gestures.dart';// para poder usar o mouse para arrastar a tela
-import 'telas/home/tela_home.dart';
+
 void main() {
   runApp(const KeepCloseApp());
 }
@@ -21,7 +21,7 @@ class KeepCloseApp extends StatelessWidget {
 
       scrollBehavior: MeuScroll(),
 
-      home: const TelaHome(),
+      home: const TelaSplash(),
     );
   }
 }

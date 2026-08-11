@@ -4,7 +4,12 @@ import '../modelo/dispositivo_modelo.dart';
 import 'package:projeto_fetin/tema/app_cores.dart';
 
 class TelaAdicionarDispositivo extends StatelessWidget {
-  const TelaAdicionarDispositivo({super.key});
+  final List<String> idsCadastrados;// para saber quais tags ja foram cadastradas
+
+  const TelaAdicionarDispositivo({
+    super.key,
+    required this.idsCadastrados,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -96,6 +101,7 @@ class TelaAdicionarDispositivo extends StatelessWidget {
               Expanded(
                 child: ListView(
                   children: [
+                    if (!idsCadastrados.contains("KeepClose_TAG_01"))
                     ListTile(// exemplos
                       leading: const Icon(
                         Icons.bluetooth,
@@ -123,6 +129,7 @@ class TelaAdicionarDispositivo extends StatelessWidget {
                     ),
 
                     const Divider(),
+                    if (!idsCadastrados.contains("KeepClose_TAG_02"))
                     ListTile(
                       leading: const Icon(
                         Icons.bluetooth,
