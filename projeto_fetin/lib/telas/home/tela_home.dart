@@ -152,25 +152,45 @@ class _TelaHomeState extends State<TelaHome> {
                                         ),
                                       ),
 
-                                      const SizedBox(height: 6),
+                                      const SizedBox(height: 10),
 
-                                      const Row(
+                                      Row(
                                         children: [
+
                                           Icon(
-                                            Icons.circle,
-                                            size: 11,
-                                            color: Colors.green,
+                                            dispositivo.conectado
+                                                ? Icons.circle
+                                                : Icons.circle_outlined,
+                                            color: dispositivo.conectado
+                                                ? Colors.green
+                                                : Colors.red,
+                                            size: 12,
                                           ),
-
-                                          SizedBox(width: 7),
-
+                                          const SizedBox(width: 8),                                    
                                           Text(
-                                            "Dispositivo configurado",
+                                            dispositivo.conectado
+                                                ? "Conectado"
+                                                : "Fora de alcance",
+
                                             style: TextStyle(
-                                              color: AppCores.cinza,
+                                              fontWeight: FontWeight.w500,
+                                              color: dispositivo.conectado
+                                                  ? Colors.green
+                                                  : Colors.red,
                                             ),
                                           ),
-                                        ],
+                                        ]
+                                      ),
+                                      const SizedBox(height: 10),
+
+                                      Text(
+                                        "Distância: ${dispositivo.distancia}",
+                                      ),
+
+                                      const SizedBox(height: 6),
+
+                                      Text(
+                                        "Última conexão: ${dispositivo.ultimaConexao}",
                                       ),
                                     ],
                                   ),
@@ -179,7 +199,7 @@ class _TelaHomeState extends State<TelaHome> {
                                 PopupMenuButton<String>(
                                   icon: const Icon(
                                     Icons.more_vert,
-                                    color: Colors.grey,
+                                    color: AppCores.cinza,
                                   ),
 
                                   onSelected: (valor) {
@@ -229,9 +249,6 @@ class _TelaHomeState extends State<TelaHome> {
                                     );
                                   }
 
-                                    if (valor == "personalizar") {
-                                      // Depois vamos implementar
-                                    }
 
                                     if (valor == "remover") {
                                       showDialog(
@@ -280,17 +297,6 @@ class _TelaHomeState extends State<TelaHome> {
                                           Icon(Icons.edit_outlined),
                                           SizedBox(width: 10),
                                           Text("Renomear"),
-                                        ],
-                                      ),
-                                    ),
-
-                                    PopupMenuItem(
-                                      value: "personalizar",
-                                      child: Row(
-                                        children: [
-                                          Icon(Icons.palette_outlined),
-                                          SizedBox(width: 10),
-                                          Text("Personalizar tag"),
                                         ],
                                       ),
                                     ),

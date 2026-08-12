@@ -1,9 +1,15 @@
-class DispositivoModelo {// representa uma tag cadastrada no dispositivo
-  final String idBluetooth;// final é porque não pode ser alterado
+class DispositivoModelo {
+  final String idBluetooth;
   String nome;
+  bool conectado;
+  String distancia;
+  String ultimaConexao;
 
   DispositivoModelo({
     required this.idBluetooth,
     required this.nome,
+    this.conectado = true,
+    this.distancia = "≈ 3 metros",
+    this.ultimaConexao = "Agora",
   });
 }
