@@ -176,10 +176,136 @@ class _TelaHomeState extends State<TelaHome> {
                                   ),
                                 ),
 
-                                const Icon(
-                                  Icons.arrow_forward_ios,
-                                  size: 16,
-                                  color: AppCores.cinza,
+                                PopupMenuButton<String>(
+                                  icon: const Icon(
+                                    Icons.more_vert,
+                                    color: Colors.grey,
+                                  ),
+
+                                  onSelected: (valor) {
+                                    if (valor == "renomear") {
+                                    final controller = TextEditingController(
+                                      text: dispositivo.nome,
+                                    );
+
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          title: const Text("Renomear dispositivo"),
+
+                                          content: TextField(
+                                            controller: controller,
+                                            decoration: const InputDecoration(
+                                              labelText: "Novo nome",
+                                            ),
+                                          ),
+
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text("Cancelar"),
+                                            ),
+
+                                            TextButton(
+                                              onPressed: () {
+                                                final novoNome = controller.text.trim();
+
+                                                if (novoNome.isNotEmpty) {
+                                                  setState(() {
+                                                    dispositivo.nome = novoNome;
+                                                  });
+                                                }
+
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text("Salvar"),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }
+
+                                    if (valor == "personalizar") {
+                                      // Depois vamos implementar
+                                    }
+
+                                    if (valor == "remover") {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: const Text("Remover dispositivo"),
+                                            content: Text(
+                                              "Deseja realmente remover ${dispositivo.nome}?",
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const Text("Cancelar"),
+                                              ),
+
+                                              TextButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    dispositivos.removeAt(index);
+                                                  });
+
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const Text(
+                                                  "Remover",
+                                                  style: TextStyle(
+                                                    color: Colors.red,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    }
+                                  },
+
+                                  itemBuilder: (context) => const [
+                                    PopupMenuItem(
+                                      value: "renomear",
+                                      child: Row(
+                                        children: [
+                                          Icon(Icons.edit_outlined),
+                                          SizedBox(width: 10),
+                                          Text("Renomear"),
+                                        ],
+                                      ),
+                                    ),
+
+                                    PopupMenuItem(
+                                      value: "personalizar",
+                                      child: Row(
+                                        children: [
+                                          Icon(Icons.palette_outlined),
+                                          SizedBox(width: 10),
+                                          Text("Personalizar tag"),
+                                        ],
+                                      ),
+                                    ),
+
+                                    PopupMenuItem(
+                                      value: "remover",
+                                      child: Row(
+                                        children: [
+                                          Icon(Icons.delete_outline),
+                                          SizedBox(width: 10),
+                                          Text("Remover dispositivo"),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),

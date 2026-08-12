@@ -1,6 +1,6 @@
 class DispositivoModelo {// representa uma tag cadastrada no dispositivo
-  final String idBluetooth;
-  final String nome;
+  final String idBluetooth;// final é porque não pode ser alterado
+  String nome;
 
   DispositivoModelo({
     required this.idBluetooth,
