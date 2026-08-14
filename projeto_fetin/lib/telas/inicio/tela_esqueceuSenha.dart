@@ -1,8 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_fetin/tema/app_cores.dart';
 
-class TelaEsqueceuSenha extends StatelessWidget {
+class TelaEsqueceuSenha extends StatefulWidget {
   const TelaEsqueceuSenha({super.key});
+
+  @override
+  State<TelaEsqueceuSenha> createState() => _TelaEsqueceuSenhaState();
+}
+
+class _TelaEsqueceuSenhaState extends State<TelaEsqueceuSenha> {
+
+  final TextEditingController emailController = TextEditingController();
+
+  String? erroEmail;
+
+  bool emailEstaValido = false;
+
+  bool emailValido(String email) {//validação do e-mail
+  final regex = RegExp(
+    r'^[\w\.-]+@[\w\.-]+\.\w+$',
+  );
+
+  return regex.hasMatch(email);
+}
+
+  void validarEmail() {
+  setState(() {
+    final email = emailController.text.trim();
+
+    if (email.isNotEmpty && !emailValido(email)) {
+      erroEmail = "Digite um e-mail válido";
+    } else {
+      erroEmail = null;
+    }
+
+    emailEstaValido = email.isNotEmpty && erroEmail == null;
+  });
+}
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +110,10 @@ class TelaEsqueceuSenha extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: TextField(
+                  controller: emailController,
+                    onChanged: (value) {
+                    validarEmail();
+                  },
                   keyboardType: TextInputType.emailAddress,
 
                   decoration: InputDecoration(
