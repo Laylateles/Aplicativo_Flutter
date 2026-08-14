@@ -227,18 +227,18 @@ class _TelaLoginState extends State<TelaLogin> {
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 30),
 //---------------------------------------------------------------------------------------
               SizedBox(
                 // botão entrar
                 width: double.infinity,
-                height: 45,
+                height: 55,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: formularioValido
-                      ? AppCores.roxoClaro
+                      ? AppCores.roxoMeioTermo
                       : AppCores.cinza,
-                    foregroundColor: AppCores.brancoRoxinho,
+                    foregroundColor: AppCores.branco,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18),
                     ),
@@ -255,57 +255,11 @@ class _TelaLoginState extends State<TelaLogin> {
                 : null,
                   child: const Text(
                     "Entrar",
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
               const SizedBox(height: 24),
-//--------------------------------------------------------------------------------------
-              Row(
-                // texto abaixo do esqueceu a senha
-                children: [
-                  const Expanded(child: Divider()),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: Text(
-                      "ou continue com",
-                      style: TextStyle(
-                        color: Color.fromARGB(204, 73, 69, 69),
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  const Expanded(child: Divider()),
-                ],
-              ),
-              const SizedBox(height: 24),
-//----------------------------------------------------------------------------------------
-              SizedBox(
-                // botão do google
-                width: double.infinity,
-                height: 45,
-                child: OutlinedButton(
-                  onPressed: () {},
-                  style: OutlinedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.g_mobiledata, size: 32),
-                      const SizedBox(width: 6),
-                      const Text(
-                        "Google",
-                        style: TextStyle(
-                          color: AppCores.berandoPreto),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 40),
 //--------------------------------------------------------------------------------------
               Center(
                 //rodape da pagina
