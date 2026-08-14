@@ -17,31 +17,47 @@ class _TelaLoginState extends State<TelaLogin> {
   String? erroEmail;
   String? erroSenha;
 
+  bool emailValido(String email) { // o regex para a validação do e-mail
+    final regex = RegExp(
+      r'^[\w\.-]+@[\w\.-]+\.\w+$',
+    );
+
+    return regex.hasMatch(email);
+  }
+
   void validarFormulario() {
     //para validar as entradas do usuario
     setState(() {
-      if (emailController.text.isNotEmpty && !emailController.text.contains('@')) {
-        erroEmail = "Digite um e-mail válido";
-      } else {
-        erroEmail = null;
-      }
+      // validação do e-mail
+      if (emailController.text.isNotEmpty &&
+      !emailValido(emailController.text.trim())) {
+    erroEmail = "Digite um e-mail válido";
+    } else {
+      erroEmail = null;
+    }
+
+    //validação da senha
       if (senhaController.text.isNotEmpty && senhaController.text.length < 6) {
         erroSenha = "A senha deve ter pelo menos 6 caracteres";
       } else {
         erroSenha = null;
       }
+      //verifica se todo o formulario esta valido
       formularioValido = emailController.text.isNotEmpty && senhaController.text.isNotEmpty && erroEmail == null && erroSenha == null;
     });
   }
+
+
+
+
+
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
+
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            // todas as margens do container
-            horizontal: 24,
-            vertical: 16,
-          ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
 
           child: Column(
             children: [
