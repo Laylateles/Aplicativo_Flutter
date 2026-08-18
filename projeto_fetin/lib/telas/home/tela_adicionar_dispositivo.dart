@@ -97,8 +97,7 @@ class TelaAdicionarDispositivo extends StatelessWidget {
 
               const SizedBox(height: 30),
 
-              Expanded(
-                child: ListView(
+                Column(
                   children: [
                     if (!idsCadastrados.contains("KeepClose_TAG_01"))
                     ListTile(// exemplos
@@ -156,7 +155,6 @@ class TelaAdicionarDispositivo extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
             ],
           ),
         ),
