@@ -8,7 +8,7 @@ class TelaAdicionarDispositivo extends StatelessWidget {
 
   const TelaAdicionarDispositivo({
     super.key,
-    required this.idsCadastrados, //oi layla
+    required this.idsCadastrados, //oi layla tudo bem
   });
 
   @override
