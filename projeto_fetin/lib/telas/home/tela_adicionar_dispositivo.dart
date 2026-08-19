@@ -2,14 +2,36 @@ import 'package:flutter/material.dart';
 import 'tela_nomear_dispositivo.dart';
 import '../modelo/dispositivo_modelo.dart';
 import 'package:projeto_fetin/tema/app_cores.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import '../../servicos/bluetooth_service.dart';
 
-class TelaAdicionarDispositivo extends StatelessWidget {
-  final List<String> idsCadastrados;// para saber quais tags ja foram cadastradas
+class TelaAdicionarDispositivo extends StatefulWidget {
+  final List<String> idsCadastrados;
 
   const TelaAdicionarDispositivo({
     super.key,
     required this.idsCadastrados, //oi layla tudo bem
   });
+
+  @override
+  State<TelaAdicionarDispositivo> createState() => _TelaAdicionarDispositivoState();
+}
+
+class _TelaAdicionarDispositivoState extends State<TelaAdicionarDispositivo> {
+
+  final BluetoothServiceKeepClose bluetooth = BluetoothServiceKeepClose.instancia;
+
+  @override
+  void initState() {
+    super.initState();
+    bluetooth.iniciarBusca();
+  }
+
+  @override
+  void dispose() {
+    bluetooth.pararBusca();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,63 +119,77 @@ class TelaAdicionarDispositivo extends StatelessWidget {
 
               const SizedBox(height: 30),
 
-                Column(
-                  children: [
-                    if (!idsCadastrados.contains("KeepClose_TAG_01"))
-                    ListTile(// exemplos
-                      leading: const Icon(
-                        Icons.bluetooth,
-                        color: AppCores.roxoMeioTermo,
-                      ),
-                      title: const Text("KeepClose_TAG_01"),
-                      subtitle: const Text("Sinal forte"),
-                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                      onTap: () async {
-                        final dispositivo =
-                            await Navigator.push<DispositivoModelo>(// ele espera o usuario digitar o nome de tag
-                            context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const TelaNomearDispositivo(
-                              nomeBluetooth: "KeepClose_TAG_01",
-                            ),
+                StreamBuilder<List<ScanResult>>(
+                  stream: bluetooth.resultadosScan,
+                  builder: (context, snapshot) {
+                    final resultados = snapshot.data ?? [];
+
+                    final disponiveis = resultados.where((resultado) {
+                      final id = resultado.device.remoteId.str;
+
+                      return !widget.idsCadastrados.contains(id);
+                    }).toList();
+
+                    if (disponiveis.isEmpty) {
+                      return const Padding(
+                        padding: EdgeInsets.only(top: 20),
+                        child: Text(
+                          "Nenhuma tag KeepClose encontrada.",
+                        ),
+                      );
+                    }
+
+                    return Column(
+                      children: disponiveis.map((resultado) {
+                        final device = resultado.device;
+                        final nome = device.platformName.isNotEmpty
+                            ? device.platformName
+                            : device.remoteId.str;
+
+                        return ListTile(
+                          leading: const Icon(
+                            Icons.bluetooth,
+                            color: AppCores.roxoMeioTermo,
                           ),
-                        ); // estou fazendo tudo isso para poder adicionar na tela principal os dados da tag de forma dinamica
-
-                        if (dispositivo != null && context.mounted) {
-                          Navigator.pop(context, dispositivo);
-                        }
-                      },
-                    ),
-
-                    const Divider(),
-                    if (!idsCadastrados.contains("KeepClose_TAG_02"))
-                    ListTile(
-                      leading: const Icon(
-                        Icons.bluetooth,
-                        color: AppCores.roxoMeioTermo,
-                      ),
-                      title: const Text("KeepClose_TAG_02"),
-                      subtitle: const Text("Sinal médio"),
-                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                      onTap: () async {
-                          final dispositivo =
-                            await Navigator.push<DispositivoModelo>(// ele espera o usuario digitar o nome de tag
-                            context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const TelaNomearDispositivo(
-                              nomeBluetooth: "KeepClose_TAG_02",
-                            ),
+                          title: Text(nome),
+                          subtitle: Text(
+                            "Sinal: ${resultado.rssi} dBm",
                           ),
-                        ); // estou fazendo tudo isso para poder adicionar na tela principal os dados da tag de forma dinamica
+                          trailing: const Icon(
+                            Icons.arrow_forward_ios,
+                            size: 16,
+                          ),
+                          onTap: () async {
+                            await bluetooth.pararBusca();
 
-                        if (dispositivo != null && context.mounted) {
-                          Navigator.pop(context, dispositivo);
-                        }
-                      },
-                    ),
-                  ],
+                            await bluetooth.conectar(device);
+
+                            if (!context.mounted) return;
+
+                            final dispositivo =
+                                await Navigator.push<DispositivoModelo>(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    TelaNomearDispositivo(
+                                  nomeBluetooth:
+                                      device.remoteId.str,
+                                ),
+                              ),
+                            );
+
+                            if (dispositivo != null &&
+                                context.mounted) {
+                              Navigator.pop(
+                                context,
+                                dispositivo,
+                              );
+                            }
+                          },
+                        );
+                      }).toList(),
+                    );
+                  },
                 ),
             ],
           ),
