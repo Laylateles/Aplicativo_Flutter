@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'tela_adicionar_dispositivo.dart';
 import '../modelo/dispositivo_modelo.dart';
 import 'package:projeto_fetin/tema/app_cores.dart';
+import '../../servicos/bluetooth_service.dart';
+import 'dart:async';
 
 class TelaHome extends StatefulWidget {
   const TelaHome({super.key});
@@ -12,6 +14,77 @@ class TelaHome extends StatefulWidget {
 
 class _TelaHomeState extends State<TelaHome> {
   final List<DispositivoModelo> dispositivos = [];//guarda temporariamente os nomes adicionados
+  final BluetoothServiceKeepClose bluetooth = BluetoothServiceKeepClose.instancia;
+
+  String classificarSinal(int rssi) {
+    if (rssi >= -55) {
+      return "Muito próximo";
+    }
+
+    if (rssi >= -70) {
+      return "Próximo";
+    }
+
+    if (rssi >= -82) {
+      return "Distante";
+    }
+
+    return "Crítico";
+  }
+
+  Future<void> atualizarRssi( DispositivoModelo dispositivo,) async {
+    final rssi =
+      await bluetooth.lerRssiPorId(
+      dispositivo.idBluetooth,
+    );
+
+    if (rssi == null) {
+
+      setState(() {
+        dispositivo.conectado = false;
+        dispositivo.proximidade =
+            "Fora de alcance";
+      });
+
+      return;
+    }
+    setState(() {
+
+      dispositivo.rssi = rssi;
+
+      dispositivo.conectado = true;
+
+      dispositivo.proximidade =
+          classificarSinal(rssi);
+
+      dispositivo.ultimaConexao =
+          "Agora";
+    });
+  }
+
+
+  Timer? timerRssi;
+  void iniciarMonitoramentoRssi() {
+    timerRssi = Timer.periodic(
+    const Duration(seconds: 2),
+      (timer) async {
+        for (final dispositivo in dispositivos) {
+          await atualizarRssi(dispositivo);
+        }
+      },
+    );
+  }
+  @override
+  void initState() {
+    super.initState();
+    iniciarMonitoramentoRssi();
+  }
+
+  @override
+  void dispose() {
+    timerRssi?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -184,13 +257,26 @@ class _TelaHomeState extends State<TelaHome> {
                                       const SizedBox(height: 10),
 
                                       Text(
-                                        "Distância: ${dispositivo.distancia}",
+                                        "Distância: Calculando...",
                                       ),
 
                                       const SizedBox(height: 6),
 
                                       Text(
                                         "Última conexão: ${dispositivo.ultimaConexao}",
+                                      ),
+                                      const SizedBox(height: 6),
+
+                                      Text(
+                                        dispositivo.rssi != null
+                                            ? "Sinal: ${dispositivo.rssi} dBm"
+                                            : "Sinal: aguardando...",
+                                      ),
+
+                                      const SizedBox(height: 6),
+
+                                      Text(
+                                        "Proximidade: ${dispositivo.proximidade}",
                                       ),
                                     ],
                                   ),

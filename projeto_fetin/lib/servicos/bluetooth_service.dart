@@ -1,6 +1,8 @@
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class BluetoothServiceKeepClose {
+  final Map<String, BluetoothDevice> dispositivosConectados = {};
+
   static final BluetoothServiceKeepClose instancia =
       BluetoothServiceKeepClose._();
 
@@ -38,17 +40,48 @@ class BluetoothServiceKeepClose {
 
 
   Future<void> conectar(BluetoothDevice device) async {
-  await device.connect( license: License.nonprofit,);
-}
+    await device.connect( 
+      license: License.nonprofit,
+    );
+
+    dispositivosConectados[device.remoteId.str] = device;
+  }
 
   Future<int> lerRssi(BluetoothDevice device) async {
     return device.readRssi();
   }
 
-  Future<void> acionarBuzzer(
-    BluetoothDevice device,
-    bool ligar,
-  ) async {
+  BluetoothDevice? buscarDispositivo(String idBluetooth,) {
+     return dispositivosConectados[idBluetooth];
+  }
+
+
+  Future<void> acionarBuzzerPorId(String idBluetooth,bool ligar,) async {
+    final device = dispositivosConectados[idBluetooth];
+    if (device == null) {
+      return;
+    }
+    await acionarBuzzer(
+      device,
+      ligar,
+    );
+  }
+
+  Future<int?> lerRssiPorId(String idBluetooth,) async {
+    final device = dispositivosConectados[idBluetooth];
+
+    if (device == null) {
+      return null;
+    }
+
+    if (!device.isConnected) {
+      return null;
+    }
+
+    return await lerRssi(device);
+  }
+
+  Future<void> acionarBuzzer(BluetoothDevice device,bool ligar,) async {
     final services = await device.discoverServices();
 
     for (final service in services) {
@@ -64,4 +97,5 @@ class BluetoothServiceKeepClose {
       }
     }
   }
+
 }
