@@ -142,9 +142,19 @@ class _TelaAdicionarDispositivoState extends State<TelaAdicionarDispositivo> {
                     return Column(
                       children: disponiveis.map((resultado) {
                         final device = resultado.device;
-                        final nome = device.platformName.isNotEmpty
+                        /*final nome = device.platformName.isNotEmpty
                             ? device.platformName
-                            : device.remoteId.str;
+                            : device.remoteId.str;*/
+                            final nome =
+                              resultado.advertisementData.advName.isNotEmpty
+                                  ? resultado.advertisementData.advName
+                                  : device.remoteId.str;
+                            print(
+                            "Encontrado: "
+                            "${resultado.advertisementData.advName} | "
+                            "${resultado.device.remoteId.str} | "
+                            "RSSI ${resultado.rssi}",
+                          );
 
                         return ListTile(
                           leading: const Icon(
