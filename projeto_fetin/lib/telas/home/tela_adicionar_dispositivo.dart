@@ -170,30 +170,74 @@ class _TelaAdicionarDispositivoState extends State<TelaAdicionarDispositivo> {
                             size: 16,
                           ),
                           onTap: () async {
-                            await bluetooth.pararBusca();
+                            try {
 
-                            await bluetooth.conectar(device);
+                              // Para de procurar outros dispositivos
+                              await bluetooth.pararBusca();
 
-                            if (!context.mounted) return;
-
-                            final dispositivo =
-                                await Navigator.push<DispositivoModelo>(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    TelaNomearDispositivo(
-                                  nomeBluetooth:
-                                      device.remoteId.str,
-                                ),
-                              ),
-                            );
-
-                            if (dispositivo != null &&
-                                context.mounted) {
-                              Navigator.pop(
-                                context,
-                                dispositivo,
+                              print(
+                                "Tentando conectar em: ${device.remoteId.str}",
                               );
+
+
+                              // Tenta conectar no ESP32
+                              await bluetooth.conectar(device);
+
+
+                              print(
+                                "ESP32 conectado com sucesso!"
+                              );
+
+
+                              if (!context.mounted) return;
+
+
+                              // Só abre a tela de nomear
+                              // depois da conexão funcionar
+                              final dispositivo =
+                                  await Navigator.push<DispositivoModelo>(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      TelaNomearDispositivo(
+                                    nomeBluetooth:
+                                        device.remoteId.str,
+                                  ),
+                                ),
+                              );
+
+
+                              if (dispositivo != null &&
+                                  context.mounted) {
+
+                                Navigator.pop(
+                                  context,
+                                  dispositivo,
+                                );
+                              }
+
+                            } catch (erro) {
+
+                              print(
+                                "ERRO AO CONECTAR: $erro"
+                              );
+
+
+                              if (!context.mounted) return;
+
+
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    "Não foi possível conectar à tag: $erro",
+                                  ),
+                                ),
+                              );
+
+
+                              // Se falhou, começa a procurar novamente
+                              await bluetooth.iniciarBusca();
                             }
                           },
                         );

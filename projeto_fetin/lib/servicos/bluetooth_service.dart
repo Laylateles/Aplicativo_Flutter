@@ -29,6 +29,7 @@ class BluetoothServiceKeepClose {
     await FlutterBluePlus.stopScan();
 
     await FlutterBluePlus.startScan(
+      withServices: [serviceUuid],// filtrando pelo ID
       timeout: const Duration(seconds: 10),
     );
   }
@@ -37,13 +38,19 @@ class BluetoothServiceKeepClose {
     await FlutterBluePlus.stopScan();
   }
 
+  Future<void> conectar(BluetoothDevice device,) async {
+    if (!device.isConnected) {
+      await device.connect(
+        license: License.nonprofit,
+        timeout: const Duration(
+          seconds: 10,
+        ),
+      );
+    }
 
-  Future<void> conectar(BluetoothDevice device) async {
-    await device.connect( 
-      license: License.nonprofit,
-    );
-
-    dispositivosConectados[device.remoteId.str] = device;
+    dispositivosConectados[
+      device.remoteId.str
+    ] = device;
   }
 
   Future<int> lerRssi(BluetoothDevice device) async {
