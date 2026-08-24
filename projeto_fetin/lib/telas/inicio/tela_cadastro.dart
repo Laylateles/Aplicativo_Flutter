@@ -12,6 +12,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
   bool esconderSenha = true;
   bool esconderConfirmarSenha = true;
 
+  final TextEditingController nomeController = TextEditingController();
   final TextEditingController emailController = TextEditingController();// permite controlar o texto digitado no campo de e-mail
   final TextEditingController senhaController = TextEditingController();// permite controlar o texto digitado no campo de senha
   final TextEditingController confirmarSenhaController = TextEditingController();
@@ -135,14 +136,18 @@ class _TelaCadastroState extends State<TelaCadastro> {
               ),
               const SizedBox(height: 30),
               SizedBox(
-                width: double.infinity,
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: "Nome completo",
+                    width: double.infinity,
+                    child: TextField(
+                      controller: nomeController,
+                      onChanged: (value) {
+                        validarFormulario();
+                      },
+                      decoration: InputDecoration(
+                        hintText: "Nome completo",
 
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
 
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
