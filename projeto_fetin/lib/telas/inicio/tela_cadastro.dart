@@ -13,35 +13,36 @@ class _TelaCadastroState extends State<TelaCadastro> {
   bool esconderConfirmarSenha = true;
 
   final TextEditingController nomeController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();// permite controlar o texto digitado no campo de e-mail
-  final TextEditingController senhaController = TextEditingController();// permite controlar o texto digitado no campo de senha
-  final TextEditingController confirmarSenhaController = TextEditingController();
+  final TextEditingController emailController =
+      TextEditingController(); // permite controlar o texto digitado no campo de e-mail
+  final TextEditingController senhaController =
+      TextEditingController(); // permite controlar o texto digitado no campo de senha
+  final TextEditingController confirmarSenhaController =
+      TextEditingController();
   bool formularioValido = false;
   String? erroEmail;
   String? erroSenha;
   String? erroConfirmarSenha;
 
-  bool emailValido(String email) { // o regex para a validação do e-mail
-    final regex = RegExp(
-      r'^[\w\.-]+@[\w\.-]+\.\w+$',
-    );
+  bool emailValido(String email) {
+    // o regex para a validação do e-mail
+    final regex = RegExp(r'^[\w\.-]+@[\w\.-]+\.\w+$');
 
     return regex.hasMatch(email);
   }
-  
-  
+
   void validarFormulario() {
     //para validar as entradas do usuario
     setState(() {
       // validação do e-mail
       if (emailController.text.isNotEmpty &&
-      !emailValido(emailController.text.trim())) {
-    erroEmail = "Digite um e-mail válido";
-    } else {
-      erroEmail = null;
-    }
+          !emailValido(emailController.text.trim())) {
+        erroEmail = "Digite um e-mail válido";
+      } else {
+        erroEmail = null;
+      }
 
-    //validação da senha
+      //validação da senha
       if (senhaController.text.isNotEmpty && senhaController.text.length < 6) {
         erroSenha = "A senha deve ter pelo menos 6 caracteres";
       } else {
@@ -49,32 +50,28 @@ class _TelaCadastroState extends State<TelaCadastro> {
       }
 
       if (confirmarSenhaController.text.isNotEmpty &&
-      senhaController.text != confirmarSenhaController.text) {
-      erroConfirmarSenha = "As senhas não coincidem";
-    } else {
-      erroConfirmarSenha = null;
-    }
+          senhaController.text != confirmarSenhaController.text) {
+        erroConfirmarSenha = "As senhas não coincidem";
+      } else {
+        erroConfirmarSenha = null;
+      }
       //verifica se todo o formulario esta valido
-       formularioValido =
-        emailController.text.isNotEmpty &&
-        senhaController.text.isNotEmpty &&
-        confirmarSenhaController.text.isNotEmpty &&
-        erroEmail == null &&
-        erroSenha == null &&
-        erroConfirmarSenha == null;
+      formularioValido =
+          emailController.text.isNotEmpty &&
+          senhaController.text.isNotEmpty &&
+          confirmarSenhaController.text.isNotEmpty &&
+          erroEmail == null &&
+          erroSenha == null &&
+          erroConfirmarSenha == null;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 10,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
 
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -88,72 +85,60 @@ class _TelaCadastroState extends State<TelaCadastro> {
                     Navigator.pop(context);
                   },
 
-                  icon: const Icon(
-                    Icons.arrow_back_ios_new,
-                    size: 20,
-                  ),
+                  icon: const Icon(Icons.arrow_back_ios_new, size: 20),
                 ),
               ),
               const SizedBox(height: 10),
               Row(
-                  mainAxisSize: MainAxisSize.min,
+                mainAxisSize: MainAxisSize.min,
 
-                  children: const [
+                children: const [
+                  Icon(
+                    Icons.location_on,
+                    color: AppCores.roxoMeioTermo,
+                    size: 38,
+                  ),
 
-                    Icon(
-                      Icons.location_on,
+                  SizedBox(width: 8),
+
+                  Text(
+                    "KeepClose",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                       color: AppCores.roxoMeioTermo,
-                      size: 38,
                     ),
-
-                    SizedBox(width: 8),
-
-                    Text(
-                      "KeepClose",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: AppCores.roxoMeioTermo,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
+              ),
               const SizedBox(height: 40),
               const Text(
                 "Criar conta",
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               const Text(
                 "É rápido e fácil!",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey,
-                ),
+                style: TextStyle(fontSize: 16, color: Colors.grey),
               ),
               const SizedBox(height: 30),
               SizedBox(
-                    width: double.infinity,
-                    child: TextField(
-                      controller: nomeController,
-                      onChanged: (value) {
-                        validarFormulario();
-                      },
-                      decoration: InputDecoration(
-                        hintText: "Nome completo",
+                width: double.infinity,
+                child: TextField(
+                  controller: nomeController,
+                  onChanged: (value) {
+                    validarFormulario();
+                  },
+                  decoration: InputDecoration(
+                    hintText: "Nome completo",
 
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
 
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
-                      borderSide: const BorderSide(
-                        color: AppCores.cinza,
-                      ),
+                      borderSide: const BorderSide(color: AppCores.cinza),
                     ),
 
                     focusedBorder: OutlineInputBorder(
@@ -173,8 +158,8 @@ class _TelaCadastroState extends State<TelaCadastro> {
                   controller: emailController,
                   keyboardType: TextInputType.emailAddress,
                   onChanged: (value) {
-                  validarFormulario();
-                },
+                    validarFormulario();
+                  },
                   decoration: InputDecoration(
                     hintText: "E-mail",
                     errorText: erroEmail,
@@ -185,9 +170,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
 
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
-                      borderSide: const BorderSide(
-                        color: AppCores.cinza,
-                      ),
+                      borderSide: const BorderSide(color: AppCores.cinza),
                     ),
 
                     focusedBorder: OutlineInputBorder(
@@ -207,8 +190,8 @@ class _TelaCadastroState extends State<TelaCadastro> {
                   controller: senhaController,
                   obscureText: esconderSenha,
                   onChanged: (value) {
-                  validarFormulario();
-                }, 
+                    validarFormulario();
+                  },
 
                   decoration: InputDecoration(
                     hintText: "Senha",
@@ -222,9 +205,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
                       },
 
                       icon: Icon(
-                        esconderSenha
-                            ? Icons.visibility_off
-                            : Icons.visibility,
+                        esconderSenha ? Icons.visibility_off : Icons.visibility,
                       ),
                     ),
 
@@ -234,9 +215,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
 
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
-                      borderSide: const BorderSide(
-                        color: AppCores.cinza,
-                      ),
+                      borderSide: const BorderSide(color: AppCores.cinza),
                     ),
 
                     focusedBorder: OutlineInputBorder(
@@ -256,8 +235,8 @@ class _TelaCadastroState extends State<TelaCadastro> {
                   controller: confirmarSenhaController,
                   obscureText: esconderConfirmarSenha,
                   onChanged: (value) {
-                  validarFormulario();
-                },
+                    validarFormulario();
+                  },
 
                   decoration: InputDecoration(
                     hintText: "Confirmar senha",
@@ -283,9 +262,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
 
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
-                      borderSide: const BorderSide(
-                        color: AppCores.cinza,
-                      ),
+                      borderSide: const BorderSide(color: AppCores.cinza),
                     ),
 
                     focusedBorder: OutlineInputBorder(
@@ -305,8 +282,8 @@ class _TelaCadastroState extends State<TelaCadastro> {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: formularioValido
-                    ? AppCores.roxoMeioTermo
-                    : AppCores.cinza,
+                        ? AppCores.roxoMeioTermo
+                        : AppCores.cinza,
                     foregroundColor: AppCores.branco,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18),
@@ -314,16 +291,11 @@ class _TelaCadastroState extends State<TelaCadastro> {
                     elevation: 0,
                   ),
 
-                  onPressed: () {
-
-                  },
+                  onPressed: () {},
 
                   child: const Text(
                     "Cadastrar",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
