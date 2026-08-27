@@ -29,7 +29,7 @@ class BluetoothServiceKeepClose {
     await FlutterBluePlus.stopScan();
 
     await FlutterBluePlus.startScan(
-      withServices: [serviceUuid],// filtrando pelo ID
+      //withServices: [serviceUuid],// filtrando pelo ID
       timeout: const Duration(seconds: 10),
     );
   }
