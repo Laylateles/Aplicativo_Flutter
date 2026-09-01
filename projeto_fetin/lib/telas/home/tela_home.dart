@@ -3,6 +3,7 @@ import 'tela_adicionar_dispositivo.dart';
 import '../modelo/dispositivo_modelo.dart';
 import 'package:projeto_fetin/tema/app_cores.dart';
 import '../../servicos/bluetooth_service.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'dart:async';
 
 class TelaHome extends StatefulWidget {
@@ -32,36 +33,57 @@ class _TelaHomeState extends State<TelaHome> {
     return "Crítico";
   }
 
-  Future<void> atualizarRssi( DispositivoModelo dispositivo,) async {
-    final rssi =
-      await bluetooth.lerRssiPorId(
+  Future<void> atualizarRssi(DispositivoModelo dispositivo,) async {
+    final rssi = await bluetooth.lerRssiPorId(
       dispositivo.idBluetooth,
     );
 
-    if (rssi == null) {
+    if (!mounted) return;
 
+    if (rssi == null) {
       setState(() {
         dispositivo.conectado = false;
-        dispositivo.proximidade =
-            "Fora de alcance";
+        dispositivo.rssi = null;
+        dispositivo.proximidade = "Fora de alcance";
       });
-
       return;
     }
+
     setState(() {
-
       dispositivo.rssi = rssi;
-
       dispositivo.conectado = true;
-
       dispositivo.proximidade =
           classificarSinal(rssi);
-
-      dispositivo.ultimaConexao =
-          "Agora";
+      dispositivo.ultimaConexao = "Agora";
     });
   }
+  void monitorarConexao(DispositivoModelo dispositivo,) {
+    final stream = bluetooth.estadoConexaoPorId(
+      dispositivo.idBluetooth,
+    );
 
+    if (stream == null) {
+      return;
+    }
+
+    stream.listen((estado) {
+      if (!mounted) return;
+
+      if (estado == BluetoothConnectionState.disconnected) {
+        setState(() {
+          dispositivo.conectado = false;
+          dispositivo.rssi = null;
+          dispositivo.proximidade = "Fora de alcance";
+        });
+      }
+
+      if (estado == BluetoothConnectionState.connected) {
+        setState(() {
+          dispositivo.conectado = true;
+        });
+      }
+    });
+  }
 
   Timer? timerRssi;
   void iniciarMonitoramentoRssi() {
@@ -422,8 +444,10 @@ class _TelaHomeState extends State<TelaHome> {
 
           if (dispositivo != null) {
             setState(() {
-              dispositivos.add(dispositivo);//adiciona o nome na lista 
+              dispositivos.add(dispositivo);
             });
+
+            monitorarConexao(dispositivo);
           }
         },
         backgroundColor: AppCores.roxoMeioTermo,

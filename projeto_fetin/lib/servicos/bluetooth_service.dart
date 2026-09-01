@@ -84,7 +84,22 @@ class BluetoothServiceKeepClose {
       return null;
     }
 
-    return await lerRssi(device);
+    try {
+      return await lerRssi(device);
+    } catch (erro) {
+      print("Erro ao ler RSSI: $erro");
+      return null;
+    }
+  }
+
+  Stream<BluetoothConnectionState>? estadoConexaoPorId(String idBluetooth,) {
+    final device = dispositivosConectados[idBluetooth];
+
+    if (device == null) {
+      return null;
+    }
+
+    return device.connectionState;
   }
 
   Future<void> acionarBuzzer(BluetoothDevice device,bool ligar,) async {
