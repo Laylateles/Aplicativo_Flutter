@@ -77,21 +77,26 @@ class BluetoothServiceKeepClose {
     final device = dispositivosConectados[idBluetooth];
 
     if (device == null) {
+      print("RSSI: dispositivo não encontrado");
       return null;
     }
 
     if (!device.isConnected) {
+      print("RSSI: dispositivo NÃO está conectado");
       return null;
     }
 
     try {
-      return await lerRssi(device);
+      final rssi = await lerRssi(device);
+
+      print("RSSI lido: $rssi dBm");
+
+      return rssi;
     } catch (erro) {
       print("Erro ao ler RSSI: $erro");
       return null;
     }
   }
-
   Stream<BluetoothConnectionState>? estadoConexaoPorId(String idBluetooth,) {
     final device = dispositivosConectados[idBluetooth];
 

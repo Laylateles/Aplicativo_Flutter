@@ -67,22 +67,30 @@ class _TelaHomeState extends State<TelaHome> {
     }
 
     stream.listen((estado) {
-      if (!mounted) return;
+    print(
+      "ESTADO DA CONEXÃO: ${dispositivo.idBluetooth} → $estado",
+    );
 
-      if (estado == BluetoothConnectionState.disconnected) {
-        setState(() {
-          dispositivo.conectado = false;
-          dispositivo.rssi = null;
-          dispositivo.proximidade = "Fora de alcance";
-        });
-      }
+    if (!mounted) return;
 
-      if (estado == BluetoothConnectionState.connected) {
-        setState(() {
-          dispositivo.conectado = true;
-        });
-      }
-    });
+    if (estado == BluetoothConnectionState.disconnected) {
+      print(">>> ESP32 FOI DESCONECTADO");
+
+      setState(() {
+        dispositivo.conectado = false;
+        dispositivo.rssi = null;
+        dispositivo.proximidade = "Fora de alcance";
+      });
+    }
+
+    if (estado == BluetoothConnectionState.connected) {
+      print(">>> ESP32 FOI CONECTADO");
+
+      setState(() {
+        dispositivo.conectado = true;
+      });
+    }
+  });
   }
 
   Timer? timerRssi;
