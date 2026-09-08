@@ -32,36 +32,68 @@ class _TelaHomeState extends State<TelaHome> {
     return "Crítico";
   }
 
-  Future<void> atualizarRssi( DispositivoModelo dispositivo,) async {
-    final rssi =
-      await bluetooth.lerRssiPorId(
+  Future<void> atualizarRssi(DispositivoModelo dispositivo,) async {
+    if (!dispositivo.conectado) {
+      return;
+    }
+
+    final rssi = await bluetooth.lerRssiPorId(
       dispositivo.idBluetooth,
     );
 
-    if (rssi == null) {
+    if (!mounted) {
+      return;
+    }
 
+    if (rssi == null) {
       setState(() {
-        dispositivo.conectado = false;
-        dispositivo.proximidade =
-            "Fora de alcance";
+        dispositivo.rssi = null;
+        dispositivo.proximidade = "Aguardando sinal";
       });
 
       return;
     }
+
     setState(() {
-
       dispositivo.rssi = rssi;
-
-      dispositivo.conectado = true;
-
-      dispositivo.proximidade =
-          classificarSinal(rssi);
-
-      dispositivo.ultimaConexao =
-          "Agora";
+      dispositivo.proximidade = classificarSinal(rssi);
+      dispositivo.ultimaConexao = "Agora";
     });
   }
 
+  void monitorarConexao(DispositivoModelo dispositivo,) {
+    final stream =
+        bluetooth.monitorarConexaoPorId(
+      dispositivo.idBluetooth,
+    );
+
+    if (stream == null) {
+      print(
+        "CONEXÃO: dispositivo não encontrado no serviço",
+      );
+      return;
+    }
+
+    stream.listen((conectado) {
+      print(
+        "CONEXÃO ${dispositivo.nome}: $conectado",
+      );
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      dispositivo.conectado = conectado;
+
+      if (!conectado) {
+        dispositivo.rssi = null;
+        dispositivo.proximidade =
+            "Fora de alcance";
+      }
+    });
+  });
+}
 
   Timer? timerRssi;
   void iniciarMonitoramentoRssi() {
@@ -77,7 +109,9 @@ class _TelaHomeState extends State<TelaHome> {
   @override
   void initState() {
     super.initState();
-    iniciarMonitoramentoRssi();
+    // Temporariamente desativado para testar
+    // somente o estado da conexão BLE.
+    //iniciarMonitoramentoRssi();
   }
 
   @override
@@ -422,8 +456,10 @@ class _TelaHomeState extends State<TelaHome> {
 
           if (dispositivo != null) {
             setState(() {
-              dispositivos.add(dispositivo);//adiciona o nome na lista 
+              dispositivos.add(dispositivo);
             });
+
+            monitorarConexao(dispositivo);
           }
         },
         backgroundColor: AppCores.roxoMeioTermo,
