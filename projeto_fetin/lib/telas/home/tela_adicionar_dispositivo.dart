@@ -184,7 +184,7 @@ class _TelaAdicionarDispositivoState extends State<TelaAdicionarDispositivo> {
                           resultado.advertisementData.advName;
 
                       final ehKeepClose =
-                          nomeAnunciado == "KEEP_CLOSE_TAG";//pedir pros meninos colocarem esse nome
+                          nomeAnunciado == "Keep_Close_Tag01";//pedir pros meninos colocarem esse nome
 
                       final jaCadastrado =
                           widget.idsCadastrados.contains(id);
