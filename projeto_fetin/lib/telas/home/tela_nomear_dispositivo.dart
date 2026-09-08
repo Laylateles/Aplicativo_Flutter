@@ -3,11 +3,11 @@ import '../modelo/dispositivo_modelo.dart';
 import 'package:projeto_fetin/tema/app_cores.dart';
 
 class TelaNomearDispositivo extends StatefulWidget {
-  final String nomeBluetooth;
+  final String idBluetooth;
 
   const TelaNomearDispositivo({
     super.key,
-    required this.nomeBluetooth,
+    required this.idBluetooth,
   });
 
   @override
@@ -16,7 +16,11 @@ class TelaNomearDispositivo extends StatefulWidget {
 
 class _TelaNomearDispositivoState extends State<TelaNomearDispositivo> {
   final TextEditingController nomeController = TextEditingController();
-
+  @override
+  void dispose() {
+    nomeController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,7 +78,7 @@ class _TelaNomearDispositivoState extends State<TelaNomearDispositivo> {
                 ),
 
                 child: Text(
-                  widget.nomeBluetooth,
+                  widget.idBluetooth,
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -143,7 +147,7 @@ class _TelaNomearDispositivoState extends State<TelaNomearDispositivo> {
                   Navigator.pop(
                     context,
                     DispositivoModelo(
-                      idBluetooth: widget.nomeBluetooth,
+                      idBluetooth: widget.idBluetooth,
                       nome: nomeDigitado,
                     ),
                   );
