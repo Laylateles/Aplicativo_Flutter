@@ -1,3 +1,8 @@
+import 'package:bcrypt/bcrypt.dart';
+import 'package:projeto_fetin/dados/banco_dados.dart';
+import 'package:projeto_fetin/telas/modelo/usuario_modelo.dart';
+import 'package:projeto_fetin/telas/inicio/tela_login.dart';
+
 import 'package:flutter/material.dart';
 import 'package:projeto_fetin/tema/app_cores.dart';
 
@@ -57,6 +62,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
       }
       //verifica se todo o formulario esta valido
       formularioValido =
+          nomeController.text.trim().isNotEmpty &&
           emailController.text.isNotEmpty &&
           senhaController.text.isNotEmpty &&
           confirmarSenhaController.text.isNotEmpty &&
@@ -64,6 +70,93 @@ class _TelaCadastroState extends State<TelaCadastro> {
           erroSenha == null &&
           erroConfirmarSenha == null;
     });
+  }
+
+  //adicionando a função para que o cadastro esteja atrelado ao banco de dados
+  Future<void> cadastrar() async {
+    if (!formularioValido) {
+      return;
+    }
+
+    final nome = nomeController.text.trim();
+    final email = emailController.text.trim().toLowerCase();
+    final senha = senhaController.text;
+
+    try {
+      final usuarioExistente = await BancoDados.instancia.buscarUsuarioPorEmail(
+        email,
+      );
+
+      if (!mounted) {
+        return;
+      }
+
+      if (usuarioExistente != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Colors.red,
+            content: Text(
+              'Este e-mail já está cadastrado.',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        );
+        return;
+      }
+
+      final senhaHash = BCrypt.hashpw(senha, BCrypt.gensalt());
+
+      final usuario = UsuarioModelo(
+        nome: nome,
+        email: email,
+        senhaHash: senhaHash,
+      );
+
+      await BancoDados.instancia.cadastrarUsuario(usuario);
+
+      if (!mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.green,
+          content: Text(
+            'Cadastro realizado com sucesso!',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const TelaLogin()),
+      );
+    } catch (erro, stackTraceR) {
+      debugPrint('Erro ao cadastrar: $erro');
+      if (!mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            'Não foi possível realizar o cadastro.',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    nomeController.dispose();
+    emailController.dispose();
+    senhaController.dispose();
+    confirmarSenhaController.dispose();
+    super.dispose();
   }
 
   @override
@@ -291,7 +384,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
                     elevation: 0,
                   ),
 
-                  onPressed: () {},
+                  onPressed: formularioValido ? cadastrar : null,
 
                   child: const Text(
                     "Cadastrar",
