@@ -51,7 +51,6 @@ class _TelaLoginState extends State<TelaLogin> {
 
 
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
