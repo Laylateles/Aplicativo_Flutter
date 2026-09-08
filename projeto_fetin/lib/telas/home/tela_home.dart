@@ -3,7 +3,6 @@ import 'tela_adicionar_dispositivo.dart';
 import '../modelo/dispositivo_modelo.dart';
 import 'package:projeto_fetin/tema/app_cores.dart';
 import '../../servicos/bluetooth_service.dart';
-import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'dart:async';
 
 class TelaHome extends StatefulWidget {
@@ -34,64 +33,60 @@ class _TelaHomeState extends State<TelaHome> {
   }
 
   Future<void> atualizarRssi(DispositivoModelo dispositivo,) async {
+    if (!dispositivo.conectado) {
+      return;
+    }
+
     final rssi = await bluetooth.lerRssiPorId(
       dispositivo.idBluetooth,
     );
 
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
 
     if (rssi == null) {
       setState(() {
-        dispositivo.conectado = false;
         dispositivo.rssi = null;
-        dispositivo.proximidade = "Fora de alcance";
+        dispositivo.proximidade = "Aguardando sinal";
       });
+
       return;
     }
 
     setState(() {
       dispositivo.rssi = rssi;
-      dispositivo.conectado = true;
-      dispositivo.proximidade =
-          classificarSinal(rssi);
+      dispositivo.proximidade = classificarSinal(rssi);
       dispositivo.ultimaConexao = "Agora";
     });
   }
-  void monitorarConexao(DispositivoModelo dispositivo,) {
-    final stream = bluetooth.estadoConexaoPorId(
-      dispositivo.idBluetooth,
-    );
 
-    if (stream == null) {
+  void monitorarConexao( DispositivoModelo dispositivo,) {
+  final stream =
+    bluetooth.monitorarConexaoPorId(
+    dispositivo.idBluetooth,
+  );
+
+  if (stream == null) {
+    return;
+  }
+
+  stream.listen((conectado) {
+    if (!mounted) {
       return;
     }
 
-    stream.listen((estado) {
-    print(
-      "ESTADO DA CONEXÃO: ${dispositivo.idBluetooth} → $estado",
-    );
+    setState(() {
+      dispositivo.conectado = conectado;
 
-    if (!mounted) return;
-
-    if (estado == BluetoothConnectionState.disconnected) {
-      print(">>> ESP32 FOI DESCONECTADO");
-
-      setState(() {
-        dispositivo.conectado = false;
+      if (!conectado) {
         dispositivo.rssi = null;
-        dispositivo.proximidade = "Fora de alcance";
-      });
-    }
-
-    if (estado == BluetoothConnectionState.connected) {
-      print(">>> ESP32 FOI CONECTADO");
-
-      setState(() {
-        dispositivo.conectado = true;
-      });
-    }
+        dispositivo.proximidade =
+            "Fora de alcance";
+      }
+    });
   });
-  }
+}
 
   Timer? timerRssi;
   void iniciarMonitoramentoRssi() {

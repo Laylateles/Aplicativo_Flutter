@@ -10,7 +10,7 @@ class TelaAdicionarDispositivo extends StatefulWidget {
 
   const TelaAdicionarDispositivo({
     super.key,
-    required this.idsCadastrados, //oi layla tudo bem
+    required this.idsCadastrados, 
   });
 
   @override
@@ -142,9 +142,6 @@ class _TelaAdicionarDispositivoState extends State<TelaAdicionarDispositivo> {
                     return Column(
                       children: disponiveis.map((resultado) {
                         final device = resultado.device;
-                        /*final nome = device.platformName.isNotEmpty
-                            ? device.platformName
-                            : device.remoteId.str;*/
                             final nome =
                               resultado.advertisementData.advName.isNotEmpty
                                   ? resultado.advertisementData.advName
