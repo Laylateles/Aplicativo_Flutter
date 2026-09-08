@@ -32,6 +32,60 @@ class _TelaAdicionarDispositivoState extends State<TelaAdicionarDispositivo> {
     bluetooth.pararBusca();
     super.dispose();
   }
+  
+  Future<void> conectarDispositivo(BluetoothDevice device,) async {
+    try {
+    await bluetooth.pararBusca();
+
+    print(
+      "Tentando conectar em: ${device.remoteId.str}",
+    );
+
+    await bluetooth.conectar(device);
+
+    print("ESP32 conectado com sucesso!");
+
+    if (!mounted) {
+      return;
+    }
+
+    final dispositivo =
+        await Navigator.push<DispositivoModelo>(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            TelaNomearDispositivo(
+          idBluetooth: device.remoteId.str,
+        ),
+      ),
+    );
+
+    if (dispositivo != null && mounted) {
+      Navigator.pop(
+        context,
+        dispositivo,
+      );
+    }
+  } catch (erro) {
+    print(
+      "ERRO AO CONECTAR: $erro",
+    );
+
+    if (!mounted) {
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "Não foi possível conectar à tag: $erro",
+        ),
+      ),
+    );
+
+    await bluetooth.iniciarBusca();
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -123,11 +177,19 @@ class _TelaAdicionarDispositivoState extends State<TelaAdicionarDispositivo> {
                   stream: bluetooth.resultadosScan,
                   builder: (context, snapshot) {
                     final resultados = snapshot.data ?? [];
-
                     final disponiveis = resultados.where((resultado) {
                       final id = resultado.device.remoteId.str;
 
-                      return !widget.idsCadastrados.contains(id);
+                      final nomeAnunciado =
+                          resultado.advertisementData.advName;
+
+                      final ehKeepClose =
+                          nomeAnunciado == "KEEP_CLOSE_TAG";//pedir pros meninos colocarem esse nome
+
+                      final jaCadastrado =
+                          widget.idsCadastrados.contains(id);
+
+                      return ehKeepClose && !jaCadastrado;
                     }).toList();
 
                     if (disponiveis.isEmpty) {
@@ -167,75 +229,7 @@ class _TelaAdicionarDispositivoState extends State<TelaAdicionarDispositivo> {
                             size: 16,
                           ),
                           onTap: () async {
-                            try {
-
-                              // Para de procurar outros dispositivos
-                              await bluetooth.pararBusca();
-
-                              print(
-                                "Tentando conectar em: ${device.remoteId.str}",
-                              );
-
-
-                              // Tenta conectar no ESP32
-                              await bluetooth.conectar(device);
-
-
-                              print(
-                                "ESP32 conectado com sucesso!"
-                              );
-
-
-                              if (!context.mounted) return;
-
-
-                              // Só abre a tela de nomear
-                              // depois da conexão funcionar
-                              final dispositivo =
-                                  await Navigator.push<DispositivoModelo>(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      TelaNomearDispositivo(
-                                    nomeBluetooth:
-                                        device.remoteId.str,
-                                  ),
-                                ),
-                              );
-
-
-                              if (dispositivo != null &&
-                                  context.mounted) {
-
-                                Navigator.pop(
-                                  context,
-                                  dispositivo,
-                                );
-                              }
-
-                            } catch (erro) {
-
-                              print(
-                                "ERRO AO CONECTAR: $erro"
-                              );
-
-
-                              if (!context.mounted) return;
-
-
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    "Não foi possível conectar à tag: $erro",
-                                  ),
-                                ),
-                              );
-
-
-                              // Se falhou, começa a procurar novamente
-                              await bluetooth.iniciarBusca();
-                            }
+                            await conectarDispositivo(device);
                           },
                         );
                       }).toList(),

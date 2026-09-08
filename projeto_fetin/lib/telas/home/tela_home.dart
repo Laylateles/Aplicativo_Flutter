@@ -61,17 +61,24 @@ class _TelaHomeState extends State<TelaHome> {
     });
   }
 
-  void monitorarConexao( DispositivoModelo dispositivo,) {
-  final stream =
-    bluetooth.monitorarConexaoPorId(
-    dispositivo.idBluetooth,
-  );
+  void monitorarConexao(DispositivoModelo dispositivo,) {
+    final stream =
+        bluetooth.monitorarConexaoPorId(
+      dispositivo.idBluetooth,
+    );
 
-  if (stream == null) {
-    return;
-  }
+    if (stream == null) {
+      print(
+        "CONEXÃO: dispositivo não encontrado no serviço",
+      );
+      return;
+    }
 
-  stream.listen((conectado) {
+    stream.listen((conectado) {
+      print(
+        "CONEXÃO ${dispositivo.nome}: $conectado",
+      );
+
     if (!mounted) {
       return;
     }
@@ -102,7 +109,9 @@ class _TelaHomeState extends State<TelaHome> {
   @override
   void initState() {
     super.initState();
-    iniciarMonitoramentoRssi();
+    // Temporariamente desativado para testar
+    // somente o estado da conexão BLE.
+    //iniciarMonitoramentoRssi();
   }
 
   @override
