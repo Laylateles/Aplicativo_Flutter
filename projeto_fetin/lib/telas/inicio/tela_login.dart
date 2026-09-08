@@ -3,6 +3,9 @@ import 'package:projeto_fetin/tema/app_cores.dart';
 import 'tela_cadastro.dart';
 import 'tela_esqueceuSenha.dart';
 import '../home/tela_home.dart';
+import 'package:bcrypt/bcrypt.dart';
+import 'package:projeto_fetin/dados/banco_dados.dart';
+
 class TelaLogin extends StatefulWidget {
   const TelaLogin({super.key});
   @override
@@ -11,16 +14,17 @@ class TelaLogin extends StatefulWidget {
 
 class _TelaLoginState extends State<TelaLogin> {
   bool senhaOculta = true;
-  final TextEditingController emailController = TextEditingController();// permite controlar o texto digitado no campo de e-mail
-  final TextEditingController senhaController = TextEditingController();// permite controlar o texto digitado no campo de senha
+  final TextEditingController emailController =
+      TextEditingController(); // permite controlar o texto digitado no campo de e-mail
+  final TextEditingController senhaController =
+      TextEditingController(); // permite controlar o texto digitado no campo de senha
   bool formularioValido = false;
   String? erroEmail;
   String? erroSenha;
 
-  bool emailValido(String email) { // o regex para a validação do e-mail
-    final regex = RegExp(
-      r'^[\w\.-]+@[\w\.-]+\.\w+$',
-    );
+  bool emailValido(String email) {
+    // o regex para a validação do e-mail
+    final regex = RegExp(r'^[\w\.-]+@[\w\.-]+\.\w+$');
 
     return regex.hasMatch(email);
   }
@@ -30,27 +34,99 @@ class _TelaLoginState extends State<TelaLogin> {
     setState(() {
       // validação do e-mail
       if (emailController.text.isNotEmpty &&
-      !emailValido(emailController.text.trim())) {
-    erroEmail = "Digite um e-mail válido";
-    } else {
-      erroEmail = null;
-    }
+          !emailValido(emailController.text.trim())) {
+        erroEmail = "Digite um e-mail válido";
+      } else {
+        erroEmail = null;
+      }
 
-    //validação da senha
+      //validação da senha
       if (senhaController.text.isNotEmpty && senhaController.text.length < 6) {
         erroSenha = "A senha deve ter pelo menos 6 caracteres";
       } else {
         erroSenha = null;
       }
       //verifica se todo o formulario esta valido
-      formularioValido = emailController.text.isNotEmpty && senhaController.text.isNotEmpty && erroEmail == null && erroSenha == null;
+      formularioValido =
+          emailController.text.isNotEmpty &&
+          senhaController.text.isNotEmpty &&
+          erroEmail == null &&
+          erroSenha == null;
     });
   }
 
+  Future<void> entrar() async {
+    if (!formularioValido) {
+      return;
+    }
 
+    final email = emailController.text.trim().toLowerCase();
+    final senha = senhaController.text;
 
+    try {
+      final usuario = await BancoDados.instancia.buscarUsuarioPorEmail(email);
 
+      if (!mounted) {
+        return;
+      }
 
+      final credenciaisCorretas =
+          usuario != null && BCrypt.checkpw(senha, usuario.senhaHash);
+
+      if (!credenciaisCorretas) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Colors.red,
+            content: Text(
+              'E-mail ou senha incorretos.',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        );
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.green,
+          content: Text(
+            'Login realizado com sucesso!',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const TelaHome()),
+      );
+    } catch (erro) {
+      debugPrint('Erro ao realizar login: $erro');
+
+      if (!mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            'Não foi possível realizar o login.',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    senhaController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -63,7 +139,7 @@ class _TelaLoginState extends State<TelaLogin> {
             children: [
               //tudo deve estar aqui dentro
               //--------------------------------------------------------------------------
-             /* Align( -- comentei o icone que tinha a esquerda
+              /* Align( -- comentei o icone que tinha a esquerda
                 //botão da esquerda
                 alignment: Alignment.centerLeft,
                 child: IconButton(
@@ -78,7 +154,7 @@ class _TelaLoginState extends State<TelaLogin> {
               ),
             
               const SizedBox(height: 20),*/
-//--------------------------------------------------------------------------------
+              //--------------------------------------------------------------------------------
               Center(
                 // logo do aplicativo
                 child: Row(
@@ -102,20 +178,17 @@ class _TelaLoginState extends State<TelaLogin> {
                 ),
               ),
               const SizedBox(height: 30),
-//------------------------------------------------------------------------------
+              //------------------------------------------------------------------------------
               const Align(
                 // texto de boas vindas
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Bem-vindo de volta",
-                  style: TextStyle(
-                    fontSize: 23,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
                 ),
               ),
               const SizedBox(height: 5),
-//--------------------------------------------------------------------------------
+              //--------------------------------------------------------------------------------
               const Align(
                 // texto de faça login para continuar
                 alignment: Alignment.centerLeft,
@@ -129,7 +202,7 @@ class _TelaLoginState extends State<TelaLogin> {
                 ),
               ),
               const SizedBox(height: 32),
-//--------------------------------------------------------------------------------------------------
+              //--------------------------------------------------------------------------------------------------
               TextField(
                 // criando o campo de e-mail -- aqui é o campo onde o usuario digita
                 controller: emailController,
@@ -137,13 +210,19 @@ class _TelaLoginState extends State<TelaLogin> {
                   validarFormulario();
                 },
                 decoration: InputDecoration(
-                  hintText: "E-mail", // é o texto que aparece antes do usuario digitar
+                  hintText:
+                      "E-mail", // é o texto que aparece antes do usuario digitar
                   errorText: erroEmail,
                   hintStyle: TextStyle(color: AppCores.cinza),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
                     borderSide: BorderSide(
-                      color: const Color.fromARGB(113,119,119,119,), // cor do contorno do campo de e-mail
+                      color: const Color.fromARGB(
+                        113,
+                        119,
+                        119,
+                        119,
+                      ), // cor do contorno do campo de e-mail
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
@@ -156,14 +235,15 @@ class _TelaLoginState extends State<TelaLogin> {
                 ),
               ),
               const SizedBox(height: 16),
-//---------------------------------------------------------------------------------------------
+              //---------------------------------------------------------------------------------------------
               TextField(
                 // campo de senha
                 controller: senhaController,
-                obscureText: senhaOculta, //quando o usuario digitar a senha ela não vai aparecer os numeros e sim asteriscos
+                obscureText:
+                    senhaOculta, //quando o usuario digitar a senha ela não vai aparecer os numeros e sim asteriscos
                 onChanged: (value) {
                   validarFormulario();
-                },  
+                },
                 decoration: InputDecoration(
                   hintText: "Senha",
                   errorText: erroSenha,
@@ -196,7 +276,7 @@ class _TelaLoginState extends State<TelaLogin> {
                 ),
               ),
               const SizedBox(height: 12),
-//-----------------------------------------------------------------------------------------------
+              //-----------------------------------------------------------------------------------------------
               Align(
                 //frase esqueceu a senha
                 alignment: Alignment.centerLeft,
@@ -204,11 +284,11 @@ class _TelaLoginState extends State<TelaLogin> {
                   // transforma qualquer widget em algo clicavel
                   onPressed: () {
                     Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const TelaEsqueceuSenha(),
-                          ),
-                        );
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const TelaEsqueceuSenha(),
+                      ),
+                    );
                   },
 
                   style: TextButton.styleFrom(
@@ -228,7 +308,7 @@ class _TelaLoginState extends State<TelaLogin> {
                 ),
               ),
               const SizedBox(height: 30),
-//---------------------------------------------------------------------------------------
+              //---------------------------------------------------------------------------------------
               SizedBox(
                 // botão entrar
                 width: double.infinity,
@@ -236,23 +316,15 @@ class _TelaLoginState extends State<TelaLogin> {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: formularioValido
-                      ? AppCores.roxoMeioTermo
-                      : AppCores.cinza,
+                        ? AppCores.roxoMeioTermo
+                        : AppCores.cinza,
                     foregroundColor: AppCores.branco,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18),
                     ),
                     elevation: 0,
                   ),
-                  onPressed: formularioValido ? () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const TelaHome(),
-                      ),
-                    );
-                  }
-                : null,
+                  onPressed: formularioValido ? entrar : null,
                   child: const Text(
                     "Entrar",
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -260,7 +332,7 @@ class _TelaLoginState extends State<TelaLogin> {
                 ),
               ),
               const SizedBox(height: 24),
-//--------------------------------------------------------------------------------------
+              //--------------------------------------------------------------------------------------
               Center(
                 //rodape da pagina
                 child: Row(
@@ -283,7 +355,8 @@ class _TelaLoginState extends State<TelaLogin> {
                         );
                       },
 
-                      style: TextButton.styleFrom(// isso é usado para remover o padding do botão e deixar o texto mais próximo do outro texto
+                      style: TextButton.styleFrom(
+                        // isso é usado para remover o padding do botão e deixar o texto mais próximo do outro texto
                         padding: EdgeInsets.zero,
                         minimumSize: Size.zero,
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -303,7 +376,6 @@ class _TelaLoginState extends State<TelaLogin> {
               ),
             ], // children -- tudo tem de estar aqui dentro
           ),
-          
         ),
       ),
     );
