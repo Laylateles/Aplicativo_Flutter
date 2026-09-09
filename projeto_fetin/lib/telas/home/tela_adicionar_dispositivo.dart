@@ -177,19 +177,32 @@ class _TelaAdicionarDispositivoState extends State<TelaAdicionarDispositivo> {
                   stream: bluetooth.resultadosScan,
                   builder: (context, snapshot) {
                     final resultados = snapshot.data ?? [];
+
+                    for (final resultado in resultados) {
+                      print(
+                        "BLE encontrado: "
+                        "${resultado.advertisementData.advName} | "
+                        "${resultado.device.remoteId.str}",
+                      );
+                    }
+                  
                     final disponiveis = resultados.where((resultado) {
                       final id = resultado.device.remoteId.str;
 
                       final nomeAnunciado =
                           resultado.advertisementData.advName;
 
-                      final ehKeepClose =
-                          nomeAnunciado == "Keep_Close_Tag01";//pedir pros meninos colocarem esse nome
+                     final ehKeepClose = nomeAnunciado.toUpperCase().startsWith("KEEP_CLOSE");
 
                       final jaCadastrado =
                           widget.idsCadastrados.contains(id);
-
+                       print(
+                          "Nome: $nomeAnunciado | "
+                          "KeepClose: $ehKeepClose | "
+                          "Já cadastrado: $jaCadastrado",
+                        );
                       return ehKeepClose && !jaCadastrado;
+
                     }).toList();
 
                     if (disponiveis.isEmpty) {
