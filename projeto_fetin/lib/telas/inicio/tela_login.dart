@@ -126,7 +126,6 @@ class _TelaLoginState extends State<TelaLogin> {
     super.dispose();
   }
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,

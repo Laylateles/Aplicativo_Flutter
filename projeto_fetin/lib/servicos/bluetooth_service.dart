@@ -16,7 +16,7 @@ class BluetoothServiceKeepClose {
   Stream<List<ScanResult>> get resultadosScan =>
       FlutterBluePlus.scanResults;
 
-  Future<void> iniciarBusca() async {
+  /*Future<void> iniciarBusca() async {
     final suportado = await FlutterBluePlus.isSupported;
 
     if (!suportado) {
@@ -31,7 +31,29 @@ class BluetoothServiceKeepClose {
       // withServices: [serviceUuid],
       timeout: const Duration(seconds: 10),
     );
+  }*/
+
+  Future<void> iniciarBusca() async {
+  print("TESTE 1: iniciarBusca foi chamado");
+
+  final suportado = await FlutterBluePlus.isSupported;
+
+  print("TESTE 2: Bluetooth suportado = $suportado");
+
+  if (!suportado) {
+    throw Exception("Bluetooth não suportado");
   }
+
+  await FlutterBluePlus.stopScan();
+
+  print("TESTE 3: iniciando scan");
+
+  await FlutterBluePlus.startScan(
+    timeout: const Duration(seconds: 10),
+  );
+
+  print("TESTE 4: startScan executado");
+}
 
   Future<void> pararBusca() async {
     await FlutterBluePlus.stopScan();
