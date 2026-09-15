@@ -447,6 +447,7 @@ class _TelaHomeState extends State<TelaHome> {
                 idsCadastrados: dispositivos
                     .map((dispositivo) => dispositivo.idBluetooth)
                     .toList(),
+                    usuarioId: widget.usuario.id!,
               ),
             ),
           );

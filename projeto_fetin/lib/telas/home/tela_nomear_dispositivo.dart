@@ -4,10 +4,12 @@ import 'package:projeto_fetin/tema/app_cores.dart';
 
 class TelaNomearDispositivo extends StatefulWidget {
   final String idBluetooth;
+  final int usuarioId;
 
   const TelaNomearDispositivo({
     super.key,
     required this.idBluetooth,
+    required this.usuarioId,
   });
 
   @override
@@ -21,15 +23,13 @@ class _TelaNomearDispositivoState extends State<TelaNomearDispositivo> {
     nomeController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 10,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -39,10 +39,7 @@ class _TelaNomearDispositivoState extends State<TelaNomearDispositivo> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  icon: const Icon(
-                    Icons.arrow_back_ios_new,
-                    size: 20,
-                  ),
+                  icon: const Icon(Icons.arrow_back_ios_new, size: 20),
                 ),
               ),
 
@@ -59,10 +56,7 @@ class _TelaNomearDispositivoState extends State<TelaNomearDispositivo> {
               const Text(
                 "Dispositivo encontrado!",
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 15),
 
@@ -108,9 +102,7 @@ class _TelaNomearDispositivoState extends State<TelaNomearDispositivo> {
 
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: const BorderSide(
-                      color: AppCores.cinza,
-                    ),
+                    borderSide: const BorderSide(color: AppCores.cinza),
                   ),
 
                   focusedBorder: OutlineInputBorder(
@@ -130,28 +122,28 @@ class _TelaNomearDispositivoState extends State<TelaNomearDispositivo> {
                 height: 55,
                 child: ElevatedButton(
                   onPressed: () {
-                  final nomeDigitado = nomeController.text.trim();// le o texto e remove os espaçoes desnecessarios
+                    final nomeDigitado = nomeController.text
+                        .trim(); // le o texto e remove os espaçoes desnecessarios
 
-                  if (nomeDigitado.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          "Digite um nome para o dispositivo.",
+                    if (nomeDigitado.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Digite um nome para o dispositivo."),
                         ),
+                      );
+
+                      return;
+                    }
+
+                    Navigator.pop(
+                      context,
+                      DispositivoModelo(
+                        idBluetooth: widget.idBluetooth,
+                        usuarioId: widget.usuarioId,
+                        nome: nomeDigitado,
                       ),
                     );
-
-                    return;
-                  }
-
-                  Navigator.pop(
-                    context,
-                    DispositivoModelo(
-                      idBluetooth: widget.idBluetooth,
-                      nome: nomeDigitado,
-                    ),
-                  );
-                },
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppCores.roxoMeioTermo,
                     foregroundColor: AppCores.branco,
@@ -162,10 +154,7 @@ class _TelaNomearDispositivoState extends State<TelaNomearDispositivo> {
                   ),
                   child: const Text(
                     "Salvar dispositivo",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),

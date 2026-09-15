@@ -7,8 +7,13 @@ import '../../servicos/bluetooth_service.dart';
 
 class TelaAdicionarDispositivo extends StatefulWidget {
   final List<String> idsCadastrados;
+  final int usuarioId;
 
-  const TelaAdicionarDispositivo({super.key, required this.idsCadastrados});
+  const TelaAdicionarDispositivo({
+    super.key,
+    required this.idsCadastrados,
+    required this.usuarioId,
+  });
 
   @override
   State<TelaAdicionarDispositivo> createState() =>
@@ -48,8 +53,10 @@ class _TelaAdicionarDispositivoState extends State<TelaAdicionarDispositivo> {
       final dispositivo = await Navigator.push<DispositivoModelo>(
         context,
         MaterialPageRoute(
-          builder: (context) =>
-              TelaNomearDispositivo(idBluetooth: device.remoteId.str),
+          builder: (context) => TelaNomearDispositivo(
+            idBluetooth: device.remoteId.str,
+            usuarioId: widget.usuarioId,
+          ),
         ),
       );
 
