@@ -4,7 +4,7 @@ import '../modelo/dispositivo_modelo.dart';
 import 'package:projeto_fetin/tema/app_cores.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import '../../servicos/bluetooth_service.dart';
-
+import 'dart:async';
 class TelaAdicionarDispositivo extends StatefulWidget {
   final List<String> idsCadastrados;
 
@@ -20,15 +20,58 @@ class TelaAdicionarDispositivo extends StatefulWidget {
 class _TelaAdicionarDispositivoState extends State<TelaAdicionarDispositivo> {
 
   final BluetoothServiceKeepClose bluetooth = BluetoothServiceKeepClose.instancia;
+  StreamSubscription<BluetoothAdapterState>? assinaturaBluetooth;
+  bool bluetoothLigado = false;
 
   @override
   void initState() {
     super.initState();
-    bluetooth.iniciarBusca();
+
+    bluetoothLigado =
+        FlutterBluePlus.adapterStateNow ==
+        BluetoothAdapterState.on;
+    iniciarBusca();
+
+    assinaturaBluetooth =
+        FlutterBluePlus.adapterState.listen((estado) {
+      if (!mounted) {
+        return;
+      }
+      final ligado =
+          estado == BluetoothAdapterState.on;
+
+      setState(() {
+        bluetoothLigado = ligado;
+      });
+
+      if (ligado) {
+        iniciarBusca();
+      }
+    });
+  }
+  Future<void> iniciarBusca() async {
+    try {
+      await bluetooth.iniciarBusca();
+    } catch (erro) {
+      print("ERRO AO INICIAR BUSCA: $erro");
+
+      if (!mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Bluetooth desligado. Ative o Bluetooth para procurar sua tag KeepClose.",
+          ),
+        ),
+      );
+    }
   }
 
   @override
   void dispose() {
+    assinaturaBluetooth?.cancel();
     bluetooth.pararBusca();
     super.dispose();
   }
@@ -156,21 +199,51 @@ class _TelaAdicionarDispositivoState extends State<TelaAdicionarDispositivo> {
                 ),
               ),
               const SizedBox(height: 35),
-
-              const CircularProgressIndicator(
-                color: AppCores.roxoMeioTermo,
-              ),
-
-              const SizedBox(height: 20),
-
-              const Text(
-                "Procurando tags próximas...",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
+              if (!bluetoothLigado)
+                Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.only(bottom: 20),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.orange.shade50,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Colors.orange.shade300,
+                    ),
+                  ),
+                  child: const Row(
+                    children: [
+                      Icon(
+                        Icons.bluetooth_disabled,
+                        color: Colors.orange,
+                      ),
+                      SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          "Bluetooth desligado. Ligue o Bluetooth para procurar sua tag KeepClose.",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
 
+
+              if (bluetoothLigado) ...[
+                const CircularProgressIndicator(
+                  color: AppCores.roxoMeioTermo,
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  "Procurando tags próximas...",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
               const SizedBox(height: 30),
 
                 StreamBuilder<List<ScanResult>>(

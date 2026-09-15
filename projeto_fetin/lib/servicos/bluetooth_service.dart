@@ -33,26 +33,25 @@ class BluetoothServiceKeepClose {
     );
   }*/
 
-  Future<void> iniciarBusca() async {
-  print("TESTE 1: iniciarBusca foi chamado");
-
+Future<void> iniciarBusca() async {
   final suportado = await FlutterBluePlus.isSupported;
 
-  print("TESTE 2: Bluetooth suportado = $suportado");
-
   if (!suportado) {
-    throw Exception("Bluetooth não suportado");
+    throw Exception("Bluetooth não suportado neste celular");
+  }
+
+  final estado = FlutterBluePlus.adapterStateNow;
+
+  if (estado != BluetoothAdapterState.on) {
+    throw Exception("Bluetooth desligado");
   }
 
   await FlutterBluePlus.stopScan();
 
-  print("TESTE 3: iniciando scan");
-
   await FlutterBluePlus.startScan(
+    // Mantemos sem withServices por enquanto.
     timeout: const Duration(seconds: 10),
   );
-
-  print("TESTE 4: startScan executado");
 }
 
   Future<void> pararBusca() async {
