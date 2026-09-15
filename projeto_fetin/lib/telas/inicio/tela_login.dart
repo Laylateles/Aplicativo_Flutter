@@ -98,7 +98,7 @@ class _TelaLoginState extends State<TelaLogin> {
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const TelaHome()),
+        MaterialPageRoute(builder: (context) => TelaHome(usuario: usuario)),
       );
     } catch (erro) {
       debugPrint('Erro ao realizar login: $erro');

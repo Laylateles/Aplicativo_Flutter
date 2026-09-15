@@ -4,17 +4,23 @@ import '../modelo/dispositivo_modelo.dart';
 import 'package:projeto_fetin/tema/app_cores.dart';
 import '../../servicos/bluetooth_service.dart';
 import 'dart:async';
+import '../modelo/usuario_modelo.dart';
 
+//alterando o construtor para receber um usuário
 class TelaHome extends StatefulWidget {
-  const TelaHome({super.key});
+  final UsuarioModelo usuario;
+
+  const TelaHome({super.key, required this.usuario});
 
   @override
   State<TelaHome> createState() => _TelaHomeState();
 }
 
 class _TelaHomeState extends State<TelaHome> {
-  final List<DispositivoModelo> dispositivos = [];//guarda temporariamente os nomes adicionados
-  final BluetoothServiceKeepClose bluetooth = BluetoothServiceKeepClose.instancia;
+  final List<DispositivoModelo> dispositivos =
+      []; //guarda temporariamente os nomes adicionados
+  final BluetoothServiceKeepClose bluetooth =
+      BluetoothServiceKeepClose.instancia;
 
   String classificarSinal(int rssi) {
     if (rssi >= -55) {
@@ -32,14 +38,12 @@ class _TelaHomeState extends State<TelaHome> {
     return "Crítico";
   }
 
-  Future<void> atualizarRssi(DispositivoModelo dispositivo,) async {
+  Future<void> atualizarRssi(DispositivoModelo dispositivo) async {
     if (!dispositivo.conectado) {
       return;
     }
 
-    final rssi = await bluetooth.lerRssiPorId(
-      dispositivo.idBluetooth,
-    );
+    final rssi = await bluetooth.lerRssiPorId(dispositivo.idBluetooth);
 
     if (!mounted) {
       return;
@@ -61,51 +65,41 @@ class _TelaHomeState extends State<TelaHome> {
     });
   }
 
-  void monitorarConexao(DispositivoModelo dispositivo,) {
-    final stream =
-        bluetooth.monitorarConexaoPorId(
-      dispositivo.idBluetooth,
-    );
+  void monitorarConexao(DispositivoModelo dispositivo) {
+    final stream = bluetooth.monitorarConexaoPorId(dispositivo.idBluetooth);
 
     if (stream == null) {
-      print(
-        "CONEXÃO: dispositivo não encontrado no serviço",
-      );
+      print("CONEXÃO: dispositivo não encontrado no serviço");
       return;
     }
 
     stream.listen((conectado) {
-      print(
-        "CONEXÃO ${dispositivo.nome}: $conectado",
-      );
+      print("CONEXÃO ${dispositivo.nome}: $conectado");
 
-    if (!mounted) {
-      return;
-    }
-
-    setState(() {
-      dispositivo.conectado = conectado;
-
-      if (!conectado) {
-        dispositivo.rssi = null;
-        dispositivo.proximidade =
-            "Fora de alcance";
+      if (!mounted) {
+        return;
       }
+
+      setState(() {
+        dispositivo.conectado = conectado;
+
+        if (!conectado) {
+          dispositivo.rssi = null;
+          dispositivo.proximidade = "Fora de alcance";
+        }
+      });
     });
-  });
-}
+  }
 
   Timer? timerRssi;
   void iniciarMonitoramentoRssi() {
-    timerRssi = Timer.periodic(
-    const Duration(seconds: 2),
-      (timer) async {
-        for (final dispositivo in dispositivos) {
-          await atualizarRssi(dispositivo);
-        }
-      },
-    );
+    timerRssi = Timer.periodic(const Duration(seconds: 2), (timer) async {
+      for (final dispositivo in dispositivos) {
+        await atualizarRssi(dispositivo);
+      }
+    });
   }
+
   @override
   void initState() {
     super.initState();
@@ -127,10 +121,7 @@ class _TelaHomeState extends State<TelaHome> {
 
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 20,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
 
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,7 +129,6 @@ class _TelaHomeState extends State<TelaHome> {
             children: [
               const Row(
                 children: [
-
                   Icon(
                     Icons.location_on,
                     color: AppCores.roxoMeioTermo,
@@ -158,9 +148,9 @@ class _TelaHomeState extends State<TelaHome> {
                 ],
               ),
               const SizedBox(height: 35),
-              const Text(
-                "Olá!",
-                style: TextStyle(
+              Text(
+                "Olá, ${widget.usuario.nome}!",
+                style: const TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
                 ),
@@ -170,15 +160,13 @@ class _TelaHomeState extends State<TelaHome> {
 
               const Text(
                 "Seus dispositivos",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: AppCores.cinza,
-                ),
+                style: TextStyle(fontSize: 16, color: AppCores.cinza),
               ),
               const SizedBox(height: 30),
 
               Expanded(
-                child: dispositivos.isEmpty ? Center(
+                child: dispositivos.isEmpty
+                    ? Center(
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -213,8 +201,10 @@ class _TelaHomeState extends State<TelaHome> {
                           ],
                         ),
                       )
-                    : ListView.separated( itemCount: dispositivos.length,
-                        separatorBuilder: (context, index) => const SizedBox(height: 16),
+                    : ListView.separated(
+                        itemCount: dispositivos.length,
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(height: 16),
 
                         itemBuilder: (context, index) {
                           final dispositivo = dispositivos[index];
@@ -263,7 +253,6 @@ class _TelaHomeState extends State<TelaHome> {
 
                                       Row(
                                         children: [
-
                                           Icon(
                                             dispositivo.conectado
                                                 ? Icons.circle
@@ -273,7 +262,7 @@ class _TelaHomeState extends State<TelaHome> {
                                                 : Colors.red,
                                             size: 12,
                                           ),
-                                          const SizedBox(width: 8),                                    
+                                          const SizedBox(width: 8),
                                           Text(
                                             dispositivo.conectado
                                                 ? "Conectado"
@@ -286,13 +275,11 @@ class _TelaHomeState extends State<TelaHome> {
                                                   : Colors.red,
                                             ),
                                           ),
-                                        ]
+                                        ],
                                       ),
                                       const SizedBox(height: 10),
 
-                                      Text(
-                                        "Distância: Calculando...",
-                                      ),
+                                      Text("Distância: Calculando..."),
 
                                       const SizedBox(height: 6),
 
@@ -324,58 +311,64 @@ class _TelaHomeState extends State<TelaHome> {
 
                                   onSelected: (valor) {
                                     if (valor == "renomear") {
-                                    final controller = TextEditingController(
-                                      text: dispositivo.nome,
-                                    );
+                                      final controller = TextEditingController(
+                                        text: dispositivo.nome,
+                                      );
 
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                          title: const Text("Renomear dispositivo"),
-
-                                          content: TextField(
-                                            controller: controller,
-                                            decoration: const InputDecoration(
-                                              labelText: "Novo nome",
-                                            ),
-                                          ),
-
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text("Cancelar"),
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: const Text(
+                                              "Renomear dispositivo",
                                             ),
 
-                                            TextButton(
-                                              onPressed: () {
-                                                final novoNome = controller.text.trim();
-
-                                                if (novoNome.isNotEmpty) {
-                                                  setState(() {
-                                                    dispositivo.nome = novoNome;
-                                                  });
-                                                }
-
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text("Salvar"),
+                                            content: TextField(
+                                              controller: controller,
+                                              decoration: const InputDecoration(
+                                                labelText: "Novo nome",
+                                              ),
                                             ),
-                                          ],
-                                        );
-                                      },
-                                    );
-                                  }
 
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const Text("Cancelar"),
+                                              ),
+
+                                              TextButton(
+                                                onPressed: () {
+                                                  final novoNome = controller
+                                                      .text
+                                                      .trim();
+
+                                                  if (novoNome.isNotEmpty) {
+                                                    setState(() {
+                                                      dispositivo.nome =
+                                                          novoNome;
+                                                    });
+                                                  }
+
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const Text("Salvar"),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    }
 
                                     if (valor == "remover") {
                                       showDialog(
                                         context: context,
                                         builder: (context) {
                                           return AlertDialog(
-                                            title: const Text("Remover dispositivo"),
+                                            title: const Text(
+                                              "Remover dispositivo",
+                                            ),
                                             content: Text(
                                               "Deseja realmente remover ${dispositivo.nome}?",
                                             ),
@@ -390,7 +383,9 @@ class _TelaHomeState extends State<TelaHome> {
                                               TextButton(
                                                 onPressed: () {
                                                   setState(() {
-                                                    dispositivos.removeAt(index);
+                                                    dispositivos.removeAt(
+                                                      index,
+                                                    );
                                                   });
 
                                                   Navigator.pop(context);
@@ -449,7 +444,9 @@ class _TelaHomeState extends State<TelaHome> {
             context,
             MaterialPageRoute(
               builder: (context) => TelaAdicionarDispositivo(
-              idsCadastrados: dispositivos.map((dispositivo) => dispositivo.idBluetooth).toList(),
+                idsCadastrados: dispositivos
+                    .map((dispositivo) => dispositivo.idBluetooth)
+                    .toList(),
               ),
             ),
           );
