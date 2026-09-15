@@ -9,15 +9,16 @@ class BluetoothServiceKeepClose {
   final Map<String, BluetoothDevice> dispositivosConectados = {};
 
   // UUID do serviço BLE da tag KeepClose
-  final Guid serviceUuid = Guid(
-    "12345678-1234-1234-1234-123456789001",
-  );
+  final Guid serviceUuid = Guid("12345678-1234-1234-1234-123456789001");
 
-  Stream<List<ScanResult>> get resultadosScan =>
-      FlutterBluePlus.scanResults;
+  Stream<List<ScanResult>> get resultadosScan => FlutterBluePlus.scanResults;
 
-  /*Future<void> iniciarBusca() async {
+  Future<void> iniciarBusca() async {
+    print("TESTE 1: iniciarBusca foi chamado");
+
     final suportado = await FlutterBluePlus.isSupported;
+
+    print("TESTE 2: Bluetooth suportado = $suportado");
 
     if (!suportado) {
       throw Exception("Bluetooth não suportado");
@@ -25,43 +26,18 @@ class BluetoothServiceKeepClose {
 
     await FlutterBluePlus.stopScan();
 
-    await FlutterBluePlus.startScan(
-      // Ainda mantemos o filtro comentado,
-      // porque com ele o ESP32 não estava aparecendo.
-      // withServices: [serviceUuid],
-      timeout: const Duration(seconds: 10),
-    );
-  }*/
+    print("TESTE 3: iniciando scan");
 
-  Future<void> iniciarBusca() async {
-  print("TESTE 1: iniciarBusca foi chamado");
+    await FlutterBluePlus.startScan(timeout: const Duration(seconds: 10));
 
-  final suportado = await FlutterBluePlus.isSupported;
-
-  print("TESTE 2: Bluetooth suportado = $suportado");
-
-  if (!suportado) {
-    throw Exception("Bluetooth não suportado");
+    print("TESTE 4: startScan executado");
   }
-
-  await FlutterBluePlus.stopScan();
-
-  print("TESTE 3: iniciando scan");
-
-  await FlutterBluePlus.startScan(
-    timeout: const Duration(seconds: 10),
-  );
-
-  print("TESTE 4: startScan executado");
-}
 
   Future<void> pararBusca() async {
     await FlutterBluePlus.stopScan();
   }
 
-  Future<void> conectar(
-    BluetoothDevice device,
-  ) async {
+  Future<void> conectar(BluetoothDevice device) async {
     if (!device.isConnected) {
       await device.connect(
         license: License.nonprofit,
@@ -69,15 +45,11 @@ class BluetoothServiceKeepClose {
       );
     }
 
-    dispositivosConectados[device.remoteId.str] =
-        device;
+    dispositivosConectados[device.remoteId.str] = device;
   }
 
-  Future<int?> lerRssiPorId(
-    String idBluetooth,
-  ) async {
-    final device =
-        dispositivosConectados[idBluetooth];
+  Future<int?> lerRssiPorId(String idBluetooth) async {
+    final device = dispositivosConectados[idBluetooth];
 
     if (device == null || !device.isConnected) {
       return null;
@@ -91,9 +63,8 @@ class BluetoothServiceKeepClose {
     }
   }
 
-  Stream<bool>? monitorarConexaoPorId( String idBluetooth,) {
-    final device =
-        dispositivosConectados[idBluetooth];
+  Stream<bool>? monitorarConexaoPorId(String idBluetooth) {
+    final device = dispositivosConectados[idBluetooth];
 
     if (device == null) {
       return null;

@@ -8,18 +8,16 @@ import '../../servicos/bluetooth_service.dart';
 class TelaAdicionarDispositivo extends StatefulWidget {
   final List<String> idsCadastrados;
 
-  const TelaAdicionarDispositivo({
-    super.key,
-    required this.idsCadastrados, 
-  });
+  const TelaAdicionarDispositivo({super.key, required this.idsCadastrados});
 
   @override
-  State<TelaAdicionarDispositivo> createState() => _TelaAdicionarDispositivoState();
+  State<TelaAdicionarDispositivo> createState() =>
+      _TelaAdicionarDispositivoState();
 }
 
 class _TelaAdicionarDispositivoState extends State<TelaAdicionarDispositivo> {
-
-  final BluetoothServiceKeepClose bluetooth = BluetoothServiceKeepClose.instancia;
+  final BluetoothServiceKeepClose bluetooth =
+      BluetoothServiceKeepClose.instancia;
 
   @override
   void initState() {
@@ -32,60 +30,46 @@ class _TelaAdicionarDispositivoState extends State<TelaAdicionarDispositivo> {
     bluetooth.pararBusca();
     super.dispose();
   }
-  
-  Future<void> conectarDispositivo(BluetoothDevice device,) async {
+
+  Future<void> conectarDispositivo(BluetoothDevice device) async {
     try {
-    await bluetooth.pararBusca();
+      await bluetooth.pararBusca();
 
-    print(
-      "Tentando conectar em: ${device.remoteId.str}",
-    );
+      print("Tentando conectar em: ${device.remoteId.str}");
 
-    await bluetooth.conectar(device);
+      await bluetooth.conectar(device);
 
-    print("ESP32 conectado com sucesso!");
+      print("ESP32 conectado com sucesso!");
 
-    if (!mounted) {
-      return;
-    }
+      if (!mounted) {
+        return;
+      }
 
-    final dispositivo =
-        await Navigator.push<DispositivoModelo>(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>
-            TelaNomearDispositivo(
-          idBluetooth: device.remoteId.str,
-        ),
-      ),
-    );
-
-    if (dispositivo != null && mounted) {
-      Navigator.pop(
+      final dispositivo = await Navigator.push<DispositivoModelo>(
         context,
-        dispositivo,
-      );
-    }
-  } catch (erro) {
-    print(
-      "ERRO AO CONECTAR: $erro",
-    );
-
-    if (!mounted) {
-      return;
-    }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          "Não foi possível conectar à tag: $erro",
+        MaterialPageRoute(
+          builder: (context) =>
+              TelaNomearDispositivo(idBluetooth: device.remoteId.str),
         ),
-      ),
-    );
+      );
 
-    await bluetooth.iniciarBusca();
+      if (dispositivo != null && mounted) {
+        Navigator.pop(context, dispositivo);
+      }
+    } catch (erro) {
+      print("ERRO AO CONECTAR: $erro");
+
+      if (!mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Não foi possível conectar à tag: $erro")),
+      );
+
+      await bluetooth.iniciarBusca();
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -104,10 +88,7 @@ class _TelaAdicionarDispositivoState extends State<TelaAdicionarDispositivo> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  icon: const Icon(
-                    Icons.arrow_back_ios_new,
-                    size: 20,
-                  ),
+                  icon: const Icon(Icons.arrow_back_ios_new, size: 20),
                 ),
               ),
 
@@ -138,10 +119,7 @@ class _TelaAdicionarDispositivoState extends State<TelaAdicionarDispositivo> {
               const Text(
                 "Adicionar dispositivo",
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
               ),
 
               const SizedBox(height: 8),
@@ -157,98 +135,87 @@ class _TelaAdicionarDispositivoState extends State<TelaAdicionarDispositivo> {
               ),
               const SizedBox(height: 35),
 
-              const CircularProgressIndicator(
-                color: AppCores.roxoMeioTermo,
-              ),
+              const CircularProgressIndicator(color: AppCores.roxoMeioTermo),
 
               const SizedBox(height: 20),
 
               const Text(
                 "Procurando tags próximas...",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
               ),
 
               const SizedBox(height: 30),
 
-                StreamBuilder<List<ScanResult>>(
-                  stream: bluetooth.resultadosScan,
-                  builder: (context, snapshot) {
-                    final resultados = snapshot.data ?? [];
+              StreamBuilder<List<ScanResult>>(
+                stream: bluetooth.resultadosScan,
+                builder: (context, snapshot) {
+                  final resultados = snapshot.data ?? [];
 
-                    for (final resultado in resultados) {
-                      print(
-                        "BLE encontrado: "
-                        "${resultado.advertisementData.advName} | "
-                        "${resultado.device.remoteId.str}",
-                      );
-                    }
-                  
-                    final disponiveis = resultados.where((resultado) {
-                      final id = resultado.device.remoteId.str;
-
-                      final nomeAnunciado =
-                          resultado.advertisementData.advName;
-
-                     final ehKeepClose = nomeAnunciado.toUpperCase().startsWith("KEEP_CLOSE");
-
-                      final jaCadastrado =
-                          widget.idsCadastrados.contains(id);
-                       print(
-                          "Nome: $nomeAnunciado | "
-                          "KeepClose: $ehKeepClose | "
-                          "Já cadastrado: $jaCadastrado",
-                        );
-                      return ehKeepClose && !jaCadastrado;
-
-                    }).toList();
-
-                    if (disponiveis.isEmpty) {
-                      return const Padding(
-                        padding: EdgeInsets.only(top: 20),
-                        child: Text(
-                          "Nenhuma tag KeepClose encontrada.",
-                        ),
-                      );
-                    }
-
-                    return Column(
-                      children: disponiveis.map((resultado) {
-                        final device = resultado.device;
-                            final nome =
-                              resultado.advertisementData.advName.isNotEmpty
-                                  ? resultado.advertisementData.advName
-                                  : device.remoteId.str;
-                            print(
-                            "Encontrado: "
-                            "${resultado.advertisementData.advName} | "
-                            "${resultado.device.remoteId.str} | "
-                            "RSSI ${resultado.rssi}",
-                          );
-
-                        return ListTile(
-                          leading: const Icon(
-                            Icons.bluetooth,
-                            color: AppCores.roxoMeioTermo,
-                          ),
-                          title: Text(nome),
-                          subtitle: Text(
-                            "Sinal: ${resultado.rssi} dBm",
-                          ),
-                          trailing: const Icon(
-                            Icons.arrow_forward_ios,
-                            size: 16,
-                          ),
-                          onTap: () async {
-                            await conectarDispositivo(device);
-                          },
-                        );
-                      }).toList(),
+                  for (final resultado in resultados) {
+                    print(
+                      "BLE encontrado: "
+                      "${resultado.advertisementData.advName} | "
+                      "${resultado.device.remoteId.str}",
                     );
-                  },
-                ),
+                  }
+
+                  final disponiveis = resultados.where((resultado) {
+                    final id = resultado.device.remoteId.str;
+                    final nomeAnunciado = resultado.advertisementData.advName;
+
+                    final ehKeepClose = nomeAnunciado.toUpperCase().startsWith(
+                      "KEEP_CLOSE",
+                    );
+
+                    final jaCadastrado = widget.idsCadastrados.contains(id);
+
+                    print(
+                      "Nome: $nomeAnunciado | "
+                      "KeepClose: $ehKeepClose | "
+                      "Já cadastrado: $jaCadastrado",
+                    );
+
+                    return ehKeepClose && !jaCadastrado;
+                  }).toList();
+
+                  if (disponiveis.isEmpty) {
+                    return const Padding(
+                      padding: EdgeInsets.only(top: 20),
+                      child: Text("Nenhuma tag KeepClose encontrada."),
+                    );
+                  }
+
+                  return Column(
+                    children: disponiveis.map((resultado) {
+                      final device = resultado.device;
+                      final nome =
+                          resultado.advertisementData.advName.isNotEmpty
+                          ? resultado.advertisementData.advName
+                          : device.remoteId.str;
+
+                      print(
+                        "Encontrado: "
+                        "${resultado.advertisementData.advName} | "
+                        "${resultado.device.remoteId.str} | "
+                        "RSSI ${resultado.rssi}",
+                      );
+
+                      return ListTile(
+                        leading: const Icon(
+                          Icons.bluetooth,
+                          color: AppCores.roxoMeioTermo,
+                        ),
+                        title: Text(nome),
+                        subtitle: Text("Sinal: ${resultado.rssi} dBm"),
+                        trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                        onTap: () async {
+                          await conectarDispositivo(device);
+                        },
+                      );
+                    }).toList(),
+                  );
+                },
+              ),
             ],
           ),
         ),
