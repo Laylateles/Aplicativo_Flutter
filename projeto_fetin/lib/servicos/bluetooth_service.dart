@@ -21,7 +21,13 @@ class BluetoothServiceKeepClose {
     print("TESTE 2: Bluetooth suportado = $suportado");
 
     if (!suportado) {
-      throw Exception("Bluetooth não suportado");
+      throw Exception("Bluetooth não suportado neste celular");
+    }
+
+    final estado = FlutterBluePlus.adapterStateNow;
+
+    if (estado != BluetoothAdapterState.on) {
+      throw Exception("Bluetooth desligado");
     }
 
     await FlutterBluePlus.stopScan();

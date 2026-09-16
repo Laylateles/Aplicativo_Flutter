@@ -39,13 +39,14 @@ class _TelaOnboardingState extends State<TelaOnboarding> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
+      body: SafeArea(
+        child: Column(
+          children: [
           paginaAtual != paginas.length - 1
           ? Padding(
               padding: const EdgeInsets.only(
-                top: 5,
-                right: 5,
+                top: 12,
+                right: 16,
               ),
 
               child: Align(
@@ -85,7 +86,7 @@ class _TelaOnboardingState extends State<TelaOnboarding> {
                   padding: const EdgeInsets.all(32),
 
                   child: Column(
-                   mainAxisAlignment: MainAxisAlignment.start,
+                   mainAxisAlignment: MainAxisAlignment.center,
 
                     children: [
                       Text(
@@ -113,7 +114,7 @@ class _TelaOnboardingState extends State<TelaOnboarding> {
                       const SizedBox(height: 15),
                       SvgPicture.asset(
                         pagina.imagem,
-                        height: 260,
+                        height: 220,
                       ),
                     ],
                   ),
@@ -145,9 +146,12 @@ class _TelaOnboardingState extends State<TelaOnboarding> {
               },
             ),
           ),
-          const SizedBox(height: 30),
+          const SizedBox(height: 20),
           Padding(// botões de navegação
-            padding: const EdgeInsets.symmetric(horizontal: 32),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 40,
+              vertical: 16,
+            ),
             child: SizedBox(
               width: double.infinity,
               height: 55,
@@ -185,8 +189,9 @@ class _TelaOnboardingState extends State<TelaOnboarding> {
               ),
             ),
           ),
-          const SizedBox(height: 40),
-        ],
+          const SizedBox(height: 30),
+          ],
+        ),
       ),
     );
   }

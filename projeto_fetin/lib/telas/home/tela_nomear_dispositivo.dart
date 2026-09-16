@@ -28,7 +28,7 @@ class _TelaNomearDispositivoState extends State<TelaNomearDispositivo> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -43,11 +43,11 @@ class _TelaNomearDispositivoState extends State<TelaNomearDispositivo> {
                 ),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
 
               const Icon(
                 Icons.bluetooth_connected,
-                size: 70,
+                size: 60,
                 color: AppCores.roxoMeioTermo,
               ),
 
@@ -92,7 +92,7 @@ class _TelaNomearDispositivoState extends State<TelaNomearDispositivo> {
                 ),
               ),
 
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
 
               TextField(
                 controller: nomeController,
@@ -115,7 +115,7 @@ class _TelaNomearDispositivoState extends State<TelaNomearDispositivo> {
                 ),
               ),
 
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
 
               SizedBox(
                 width: double.infinity,
