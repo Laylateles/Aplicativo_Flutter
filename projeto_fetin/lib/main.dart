@@ -1,9 +1,25 @@
 import 'package:flutter/material.dart';
 import 'tema/app_tema.dart';
-import 'telas/splash/tela_splash.dart'; //-- voltar aqui
-import 'package:flutter/gestures.dart'; // para poder usar o mouse para arrastar a tela
+import 'telas/splash/tela_splash.dart'; 
+import 'package:flutter/services.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await SystemChrome.setEnabledSystemUIMode(
+    SystemUiMode.edgeToEdge,
+  );
+
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+
+      systemNavigationBarColor: Colors.black,
+      systemNavigationBarIconBrightness: Brightness.light,
+    ),
+  );
+
   runApp(const KeepCloseApp());
 }
 
@@ -20,18 +36,9 @@ class KeepCloseApp extends StatelessWidget {
 
       theme: AppTema.lightTheme,
 
-      scrollBehavior: MeuScroll(),
-
       home: const TelaSplash(),
     );
   }
 }
 
-class MeuScroll extends MaterialScrollBehavior {
-  // para poder arrastar as paginas
-  @override
-  Set<PointerDeviceKind> get dragDevices => {
-    PointerDeviceKind.touch,
-    PointerDeviceKind.mouse,
-  };
-}
+

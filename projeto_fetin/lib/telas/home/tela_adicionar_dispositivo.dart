@@ -54,18 +54,6 @@ class _TelaAdicionarDispositivoState extends State<TelaAdicionarDispositivo> {
       await bluetooth.iniciarBusca();
     } catch (erro) {
       print("ERRO AO INICIAR BUSCA: $erro");
-
-      if (!mounted) {
-        return;
-      }
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            "Bluetooth desligado. Ative o Bluetooth para procurar sua tag KeepClose.",
-          ),
-        ),
-      );
     }
   }
 

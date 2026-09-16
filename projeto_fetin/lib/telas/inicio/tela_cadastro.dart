@@ -163,9 +163,11 @@ class _TelaCadastroState extends State<TelaCadastro> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 10,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
 
@@ -204,7 +206,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
                   ),
                 ],
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 25),
               const Text(
                 "Criar conta",
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
@@ -214,7 +216,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
                 "É rápido e fácil!",
                 style: TextStyle(fontSize: 16, color: Colors.grey),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
                 child: TextField(
@@ -368,7 +370,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
                   ),
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
                 height: 55,
