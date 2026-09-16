@@ -5,6 +5,7 @@ import 'package:projeto_fetin/tema/app_cores.dart';
 import '../../servicos/bluetooth_service.dart';
 import 'dart:async';
 import '../modelo/usuario_modelo.dart';
+import '../../dados/banco_dados.dart';
 
 //alterando o construtor para receber um usuário
 class TelaHome extends StatefulWidget {
@@ -21,6 +22,27 @@ class _TelaHomeState extends State<TelaHome> {
       []; //guarda temporariamente os nomes adicionados
   final BluetoothServiceKeepClose bluetooth =
       BluetoothServiceKeepClose.instancia;
+
+  Future<void> carregarDispositivos() async {
+    final usuarioId = widget.usuario.id;
+
+    if (usuarioId == null) {
+      return;
+    }
+
+    final dispositivosSalvos = await BancoDados.instancia
+        .buscarDispositivosDoUsuario(usuarioId);
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      dispositivos
+        ..clear()
+        ..addAll(dispositivosSalvos);
+    });
+  }
 
   String classificarSinal(int rssi) {
     if (rssi >= -55) {
@@ -103,6 +125,7 @@ class _TelaHomeState extends State<TelaHome> {
   @override
   void initState() {
     super.initState();
+    carregarDispositivos();
     // Temporariamente desativado para testar
     // somente o estado da conexão BLE.
     //iniciarMonitoramentoRssi();
@@ -447,17 +470,22 @@ class _TelaHomeState extends State<TelaHome> {
                 idsCadastrados: dispositivos
                     .map((dispositivo) => dispositivo.idBluetooth)
                     .toList(),
-                    usuarioId: widget.usuario.id!,
+                usuarioId: widget.usuario.id!,
               ),
             ),
           );
 
           if (dispositivo != null) {
+            await BancoDados.instancia.salvarDispositivo(dispositivo);
+            if (!mounted) {
+              return;
+            }
             setState(() {
               dispositivos.add(dispositivo);
             });
 
             monitorarConexao(dispositivo);
+            // await atualizarRssi(dispositivo);
           }
         },
         backgroundColor: AppCores.roxoMeioTermo,

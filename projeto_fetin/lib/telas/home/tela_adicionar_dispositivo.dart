@@ -195,17 +195,6 @@ class _TelaAdicionarDispositivoState extends State<TelaAdicionarDispositivo> {
                   ),
                 ),
 
-              if (bluetoothLigado)
-                const CircularProgressIndicator(color: AppCores.roxoMeioTermo),
-
-              if (bluetoothLigado) const SizedBox(height: 20),
-
-              if (bluetoothLigado)
-                const Text(
-                  "Procurando tags próximas...",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                ),
-
               if (bluetoothLigado) ...[
                 const CircularProgressIndicator(color: AppCores.roxoMeioTermo),
                 const SizedBox(height: 20),
@@ -234,7 +223,7 @@ class _TelaAdicionarDispositivoState extends State<TelaAdicionarDispositivo> {
                     final nomeAnunciado = resultado.advertisementData.advName;
 
                     final ehKeepClose = nomeAnunciado.toUpperCase().startsWith(
-                      "KEEP_CLOSE",
+                      "KEEPCLOSE_", //KEEP_CLOSE",
                     );
 
                     final jaCadastrado = widget.idsCadastrados.contains(id);
