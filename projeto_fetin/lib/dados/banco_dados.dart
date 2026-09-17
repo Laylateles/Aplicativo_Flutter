@@ -1,6 +1,7 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import '../telas/modelo/usuario_modelo.dart';
+import '../telas/modelo/dispositivo_modelo.dart';
 
 class BancoDados {
   BancoDados._();
@@ -88,5 +89,30 @@ class BancoDados {
     }
 
     return UsuarioModelo.fromMap(resultado.first);
+  }
+
+  Future<void> salvarDispositivo(DispositivoModelo dispositivo) async {
+    final db = await banco;
+
+    await db.insert(
+      'dispositivos',
+      dispositivo.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<List<DispositivoModelo>> buscarDispositivosDoUsuario(
+    int usuarioId,
+  ) async {
+    final db = await banco;
+
+    final resultado = await db.query(
+      'dispositivos',
+      where: 'usuario_id = ?',
+      whereArgs: [usuarioId],
+      orderBy: 'nome ASC',
+    );
+
+    return resultado.map((map) => DispositivoModelo.fromMap(map)).toList();
   }
 }
