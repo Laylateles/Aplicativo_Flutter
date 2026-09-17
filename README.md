@@ -6,9 +6,6 @@
 
 <img src="docs/readme/banner.gif" width="100%"/>
 
-<img width="500" alt="Animated GIF" src="https://github.com/user-attachments/assets/12d79d66-18fc-4c97-aed9-0fd3cb9b2f9e" />
-
-
 <br>
 
 ![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)
