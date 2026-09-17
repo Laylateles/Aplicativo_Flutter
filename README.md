@@ -51,4 +51,3 @@ flowchart LR
     C --> D{Distância crítica?}
     D -->|Não| C
     D -->|Sim| E[🚨 Alerta no celular]
-<img width="500" height="480" alt="Animated GIF" src="https://github.com/user-attachments/assets/4a50847c-ffe9-4d6f-bb11-45174b17a842" />
